@@ -1,3 +1,4 @@
+from typing import List
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.word_frequency import WordFrequency
 
@@ -11,7 +12,7 @@ from dictionary.word_frequency import WordFrequency
 
 class HashTableDictionary(BaseDictionary):
 
-    def build_dictionary(self, words_frequencies: [WordFrequency]):
+    def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
@@ -48,7 +49,7 @@ class HashTableDictionary(BaseDictionary):
         # place holder for return
         return False
 
-    def autocomplete(self, word: str) -> [str]:
+    def autocomplete(self, word: str) -> List[WordFrequency]:
         """
         return a list of 3 most-frequent words in the dictionary that have 'word' as a prefix
         @param word: word to be autocompleted
