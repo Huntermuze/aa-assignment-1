@@ -1,3 +1,4 @@
+from typing import List
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 
@@ -14,12 +15,13 @@ class ListDictionary(BaseDictionary):
     def __init__(self):
         self.word_frequencies = None
 
-    def build_dictionary(self, words_frequencies: [WordFrequency]):
+    def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
         self.word_frequencies = words_frequencies
+        self._insertion_sort_elements()
 
     def search(self, word: str) -> int:
         """
@@ -44,9 +46,11 @@ class ListDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        word_already_present = False if self.search(word_frequency.word) == 0 else True
+        word_already_present = False 
+        if self.search(word_frequency.word) == 0:
+            word_already_present = True
 
-        if not word_already_present:
+        if word_already_present == True:
             self.word_frequencies.append(word_frequency)
             self._insertion_sort_elements()
 
@@ -68,7 +72,7 @@ class ListDictionary(BaseDictionary):
 
         return word_already_present
 
-    def autocomplete(self, prefix_word: str) -> [WordFrequency]:
+    def autocomplete(self, prefix_word: str) -> List[WordFrequency]:
         """
         return a list of 3 most-frequent words in the dictionary that have 'prefix_word' as a prefix
         @param prefix_word: word to be autocompleted
