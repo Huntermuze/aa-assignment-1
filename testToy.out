@@ -3,13 +3,13 @@ Delete 'cute' failed
 NOT Found 'cute'
 NOT Found 'book'
 Add 'book' failed
-NOT Found 'book'
+Found 'book' with frequency 10000
+Found 'apple' with frequency 300
+Delete 'apple' succeeded
 NOT Found 'apple'
 Delete 'apple' failed
-NOT Found 'apple'
-Delete 'apple' failed
-Autocomplete for 'c': [ ]
-Autocomplete for 'cut': [ ]
+Autocomplete for 'c': [ calm: 1000  cuts: 50  cut: 30  ]
+Autocomplete for 'cut': [ cuts: 50  cut: 30  cute: 10  ]
 Autocomplete for 'farms': [ ]
 Delete 'cut' failed
-Autocomplete for 'cut': [ ]
+Autocomplete for 'cut': [ cuts: 50  cut: 30  cute: 10  ]

@@ -1,5 +1,3 @@
-import math
-
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 
@@ -30,9 +28,13 @@ class ListDictionary(BaseDictionary):
         @return: frequency > 0 if found and 0 if NOT found
         """
         index = self._binary_search(0, len(self.word_frequencies), word)
+        for x in self.word_frequencies:
+            print('[' + x.word, x.frequency, end=']')
+        print()
+        print(index)
 
         if index != -1:
-            return self.word_frequencies
+            return self.word_frequencies[index].frequency
 
         return 0
 
@@ -52,45 +54,21 @@ class ListDictionary(BaseDictionary):
         #  and if it is place it there and remove the smallest one
         return word_already_present
 
-    # takes advantage of best case insertion sor.
-    def _insertion_sort_elements(self) -> None:
-        for i in range(1, len(self.word_frequencies)):
-            current = self.word_frequencies[i].word
-            previous_index = i - 1
-
-            while previous_index >= 0 and self.word_frequencies[previous_index].word > current:
-                self.word_frequencies[previous_index + 1] = self.word_frequencies[previous_index]
-                previous_index -= 1
-
-            self.word_frequencies[previous_index + 1] = current
-
-    def _binary_search(self, left: int, right: int, word: str) -> int:
-        if left > right:
-            return -1
-
-        midpoint = math.ceil((left + right) / 2)
-
-        if word == self.word_frequencies[midpoint].word:
-            return midpoint
-        elif word < self.word_frequencies[midpoint].word:
-            return self._binary_search(left, midpoint - 1, word)
-        else:
-            return self._binary_search(midpoint + 1, right, word)
-
     def delete_word(self, word: str) -> bool:
         """
         delete a word from the dictionary
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        index_of_word = self._binary_search(0, len(self.word_frequencies) - 1, word)
+        index_of_word = self._binary_search(0, len(self.word_frequencies), word)
         word_already_present = False if index_of_word == -1 else True
 
-        self.word_frequencies.remove(self.word_frequencies[index_of_word])
+        if word_already_present:
+            self.word_frequencies.remove(self.word_frequencies[index_of_word])
 
         return word_already_present
 
-    def autocomplete(self, prefix_word: str) -> [str]:
+    def autocomplete(self, prefix_word: str) -> [WordFrequency]:
         """
         return a list of 3 most-frequent words in the dictionary that have 'prefix_word' as a prefix
         @param prefix_word: word to be autocompleted
@@ -100,9 +78,42 @@ class ListDictionary(BaseDictionary):
 
         for i in range(0, 3):
             highest_frequency = 0
-            for word_freq in self.word_frequencies:
-                if word_freq.frequency > highest_frequency and word_freq not in most_frequent:
-                    highest_frequency = word_freq.frequency
-                    most_frequent.append(word_freq)
+            highest_frequency_index = 0
+
+            for j in range(len(self.word_frequencies)):
+                curr_word_freq = self.word_frequencies[j]
+
+                if curr_word_freq.frequency > highest_frequency and curr_word_freq not in most_frequent \
+                        and prefix_word == curr_word_freq.word[0:len(prefix_word)]:
+                    highest_frequency = curr_word_freq.frequency
+                    highest_frequency_index = j
+
+            if highest_frequency != 0:
+                most_frequent.append(self.word_frequencies[highest_frequency_index])
 
         return most_frequent
+
+    # takes advantage of best case insertion sor.
+    def _insertion_sort_elements(self) -> None:
+        for i in range(1, len(self.word_frequencies)):
+            current = self.word_frequencies[i]
+            previous_index = i - 1
+
+            while previous_index >= 0 and self.word_frequencies[previous_index].word > current.word:
+                self.word_frequencies[previous_index + 1] = self.word_frequencies[previous_index]
+                previous_index -= 1
+
+            self.word_frequencies[previous_index + 1] = current
+
+    def _binary_search(self, left: int, right: int, word: str) -> int:
+        if left > right:
+            return -1
+
+        midpoint = (left + right) // 2
+
+        if word == self.word_frequencies[midpoint].word:
+            return midpoint
+        elif word < self.word_frequencies[midpoint].word:
+            return self._binary_search(left, midpoint - 1, word)
+        else:
+            return self._binary_search(midpoint + 1, right, word)
