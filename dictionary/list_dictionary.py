@@ -30,10 +30,6 @@ class ListDictionary(BaseDictionary):
         @return: frequency > 0 if found and 0 if NOT found
         """
         index = self._binary_search(0, len(self.word_frequencies), word)
-        for x in self.word_frequencies:
-            print('[' + x.word, x.frequency, end=']')
-        print()
-        print(index)
 
         if index != -1:
             return self.word_frequencies[index].frequency
@@ -46,17 +42,15 @@ class ListDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        word_already_present = False 
-        if self.search(word_frequency.word) == 0:
-            word_already_present = True
+        word_not_present = True if self.search(word_frequency.word) == 0 else False
 
-        if word_already_present == True:
+        if word_not_present:
             self.word_frequencies.append(word_frequency)
             self._insertion_sort_elements()
 
         # TODO we can add a check here that checks whether it is greater than elements in the top 3 lis of frequencies,
         #  and if it is place it there and remove the smallest one
-        return word_already_present
+        return word_not_present
 
     def delete_word(self, word: str) -> bool:
         """
