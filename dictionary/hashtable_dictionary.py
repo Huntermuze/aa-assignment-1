@@ -22,8 +22,8 @@ class HashTableDictionary(BaseDictionary):
         @param words_frequencies: list of (word, frequency) to be stored
         """
         self.object_list = words_frequencies
-        for x in self.object_list:
-            self.word_frequencies[x.word] = x.frequency
+        for obj in self.object_list:
+            self.word_frequencies[obj.word] = obj.frequency
 
     def search(self, word: str) -> int:
         """
@@ -69,11 +69,11 @@ class HashTableDictionary(BaseDictionary):
         top_most_frequent = []
         word_count = 0
         sorted_by_frequency = {k: v for k, v in sorted(self.word_frequencies.items(), key = lambda v: v[1], reverse=True) if k.startswith(word)}
-        for x in sorted_by_frequency:
-            for z in self.object_list:
-                if x == z.word:
+        for word_freq in sorted_by_frequency:
+            for obj in self.object_list:
+                if word_freq == obj.word:
                     word_count += 1
-                    top_most_frequent.append(z)
+                    top_most_frequent.append(obj)
                 if word_count == 3:
                     break
             
