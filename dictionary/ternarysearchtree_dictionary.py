@@ -14,12 +14,36 @@ from dictionary.node import Node
 
 class TernarySearchTreeDictionary(BaseDictionary):
 
+    def __init__(self):
+        self.object_list = None
+        self.root_node = None   
+
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
-        # TO BE IMPLEMENTED
+        self.object_list = words_frequencies
+        for obj in self.object_list:
+            self.create_tst(self.root_node, obj.word, obj.frequency, 0)
+        print("TST Creation Complete!!")
+            
+    def create_tst(self, cur_node, cur_word, cur_freq, index):
+        cur_char = cur_word[index]
+        if cur_node is None:
+            cur_node = Node(cur_char)
+        
+        if cur_char < cur_node.letter:
+            cur_node.left = self.create_tst(cur_node.left, cur_word, cur_freq, index)
+        elif cur_char > cur_node.letter:
+            cur_node.right = self.create_tst(cur_node.right, cur_word, cur_freq, index)
+        elif index < len(cur_word) - 1:
+            cur_node.middle = self.create_tst(cur_node.middle, cur_word, cur_freq, index+1)
+        else:
+            cur_node.frequency = cur_freq
+            cur_node.end_word = True
+        
+        return cur_node
 
     def search(self, word: str) -> int:
         """
