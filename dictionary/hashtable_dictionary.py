@@ -70,11 +70,10 @@ class HashTableDictionary(BaseDictionary):
         word_count = 0
         sorted_by_frequency = {k: v for k, v in sorted(self.word_frequencies.items(), key = lambda v: v[1], reverse=True) if k.startswith(word)}
         for word_freq in sorted_by_frequency:
-            for obj in self.object_list:
-                if word_freq == obj.word:
-                    word_count += 1
-                    top_most_frequent.append(obj)
-                if word_count == 3:
-                    break
+            word_freq_obj = WordFrequency(word_freq, sorted_by_frequency[word_freq])
+            word_count += 1
+            top_most_frequent.append(word_freq_obj)
+            if word_count == 3:
+                break
             
         return top_most_frequent
