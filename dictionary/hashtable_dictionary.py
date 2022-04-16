@@ -11,7 +11,7 @@ from dictionary.word_frequency import WordFrequency
 # ------------------------------------------------------------------------
 
 class HashTableDictionary(BaseDictionary):
-    
+
     def __init__(self):
         self.object_list = None
         self.word_frequencies = dict()
@@ -31,10 +31,7 @@ class HashTableDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        if word in self.word_frequencies:
-            return self.word_frequencies[word]
-        else:
-            return 0
+        return self.word_frequencies[word] if word in self.word_frequencies else 0
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
@@ -42,11 +39,12 @@ class HashTableDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        if self.search(word_frequency.word) == 0:
+        word_not_found = self.search(word_frequency.word) == 0
+
+        if word_not_found:
             self.word_frequencies[word_frequency.word] = word_frequency.frequency
-            return True
-        else:
-            return False
+
+        return word_not_found
 
     def delete_word(self, word: str) -> bool:
         """
@@ -54,11 +52,12 @@ class HashTableDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        if self.search(word) == 0:
-            return False
-        else:
+        word_found = self.search(word) != 0
+
+        if word_found:
             del self.word_frequencies[word]
-            return True
+
+        return word_found
 
     def autocomplete(self, word: str) -> List[WordFrequency]:
         """
@@ -66,14 +65,18 @@ class HashTableDictionary(BaseDictionary):
         @param word: word to be autocompleted
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
+        # TODO
         top_most_frequent = []
         word_count = 0
-        sorted_by_frequency = {k: v for k, v in sorted(self.word_frequencies.items(), key = lambda v: v[1], reverse=True) if k.startswith(word)}
+
+        sorted_by_frequency = {k: v for k, v in sorted(self.word_frequencies.items(), key=lambda v: v[1], reverse=True)
+                               if k.startswith(word)}
+
         for word_freq in sorted_by_frequency:
             word_freq_obj = WordFrequency(word_freq, sorted_by_frequency[word_freq])
             word_count += 1
             top_most_frequent.append(word_freq_obj)
             if word_count == 3:
                 break
-            
+
         return top_most_frequent
