@@ -67,11 +67,12 @@ class HashTableDictionary(BaseDictionary):
         words_to_ignore = []
 
         # It is better to do a linear scan over the KeyValue objects and handle them the same in List_dict
-        # for bias reasons (minimises bias) and because in this instance, it is better to perform a linear scan
-        # rather than sorting first, then performing a binary search. The former wields a complexity of O(n), whilst
-        # the latter is O(nlog(n)), and no sorting algorithm can have a lower order (evident via mathematical proof).
-        # Hence, to ensure the lowest theoretical time complexity or order, we will use a simple linear scan, as the
-        # outer loop always runs 3 times, making it indifferent/insensitive to input (performance is constant).
+        # for bias reasons (minimises bias) and to achieve the lowest theoretical time complexity. In this instance,
+        # it is better to perform a linear scan rather than sorting first, then performing a binary search.
+        # The former wields a complexity of O(n), whilst the latter is O(nlog(n)), and no sorting algorithm can
+        # have a lower order (evident via mathematical proof). Hence, to ensure the lowest theoretical time complexity
+        # or order, we will use a simple linear scan, as the outer loop always runs 3 times, making it
+        # indifferent/insensitive to input (performance is constant).
         for i in range(0, 3):
             highest_frequency = 0
             word_to_add = None

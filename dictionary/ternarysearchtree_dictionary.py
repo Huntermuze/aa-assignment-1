@@ -15,33 +15,33 @@ from dictionary.node import Node
 class TernarySearchTreeDictionary(BaseDictionary):
 
     def __init__(self):
-        self.object_list = None
-        self.root_node = None   
+        self.root_node = None
 
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
-        self.object_list = words_frequencies
-        for obj in self.object_list:
-            self.root_node = self.create_tst(self.root_node, obj.word, obj.frequency, 0)
+        for word_freq in words_frequencies:
+            self.root_node = self.create_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
         print("TST Creation Complete!!")
-            
-    def create_tst(self, cur_node, cur_word, cur_freq, index):
+
+    def create_tst(self, cur_node: Node, cur_word: str, cur_freq: int, index: int):
         cur_char = cur_word[index]
+
         if cur_node is None:
             cur_node = Node(cur_char)
-        
+
         if cur_char < cur_node.letter:
             cur_node.left = self.create_tst(cur_node.left, cur_word, cur_freq, index)
         elif cur_char > cur_node.letter:
             cur_node.right = self.create_tst(cur_node.right, cur_word, cur_freq, index)
         elif index < len(cur_word) - 1:
-            cur_node.middle = self.create_tst(cur_node.middle, cur_word, cur_freq, index+1)
+            cur_node.middle = self.create_tst(cur_node.middle, cur_word, cur_freq, index + 1)
         else:
             cur_node.frequency = cur_freq
             cur_node.end_word = True
+
         return cur_node
 
     def search(self, word: str) -> int:
@@ -60,22 +60,21 @@ class TernarySearchTreeDictionary(BaseDictionary):
             return 0
         else:
             return final_node.frequency
-    
+
     def search_tst(self, cur_node, word, index):
         if cur_node is None:
             return None
-        
+
         cur_char = word[index]
-        
+
         if cur_char < cur_node.letter:
             return self.search_tst(cur_node.left, word, index)
         elif cur_char > cur_node.letter:
             return self.search_tst(cur_node.right, word, index)
         elif index < len(word) - 1:
-            return self.search_tst(cur_node.middle, word, index+1)
+            return self.search_tst(cur_node.middle, word, index + 1)
         else:
             return cur_node
-        
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
