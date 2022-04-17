@@ -13,7 +13,6 @@ from dictionary.word_frequency import WordFrequency
 class HashTableDictionary(BaseDictionary):
 
     def __init__(self):
-        self.object_list = None
         self.word_frequencies = dict()
 
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
@@ -21,9 +20,8 @@ class HashTableDictionary(BaseDictionary):
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
-        self.object_list = words_frequencies
-        for obj in self.object_list:
-            self.word_frequencies[obj.word] = obj.frequency
+        for word_freq in words_frequencies:
+            self.word_frequencies[word_freq.word] = word_freq.frequency
 
     def search(self, word: str) -> int:
         """
@@ -65,18 +63,19 @@ class HashTableDictionary(BaseDictionary):
         @param word: word to be autocompleted
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
-        # TODO
         top_most_frequent = []
-        word_count = 0
 
-        sorted_by_frequency = {k: v for k, v in sorted(self.word_frequencies.items(), key=lambda v: v[1], reverse=True)
-                               if k.startswith(word)}
+        # Utilising TimSort.
+        # Consider removing the reverse arg, as it may add additional complexity to TimSort (research).
+        # It might be better to do a linear scan over the KeyValue objects and handle them the same in List_dict
+        # for bias reasons and because O(n) < O(nlog(n)).
+        temp = sorted(self.word_frequencies.items(), key=lambda v: v[1], reverse=True)
 
-        for word_freq in sorted_by_frequency:
-            word_freq_obj = WordFrequency(word_freq, sorted_by_frequency[word_freq])
-            word_count += 1
-            top_most_frequent.append(word_freq_obj)
-            if word_count == 3:
+        for kv in temp:
+            if len(top_most_frequent) == 3:
                 break
+
+            if kv[0][0:len(word)] == word:
+                top_most_frequent.append(WordFrequency(kv[0], kv[1]))
 
         return top_most_frequent

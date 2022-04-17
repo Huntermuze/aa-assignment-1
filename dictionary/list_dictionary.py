@@ -23,7 +23,7 @@ class ListDictionary(BaseDictionary):
         self.word_frequencies = words_frequencies
         # We will use TimSort (inbuilt) here instead because when the # of elements is > 64, it will utilise its
         # improved MergeSort instead of using BinSort (this will be horribly inefficient for larger input sizes).
-        sorted(self.word_frequencies, key=lambda word_freq: word_freq.word)
+        self.word_frequencies.sort(key=lambda word_freq: word_freq.word)
 
     def search(self, word: str) -> int:
         """
@@ -44,14 +44,12 @@ class ListDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        word_not_present = True if self.search(word_frequency.word) == 0 else False
+        word_not_present = self.search(word_frequency.word) == 0
 
         if word_not_present:
             self.word_frequencies.append(word_frequency)
             self._binary_insertion_sort_elements()
 
-        # TODO we can add a check here that checks whether it is greater than elements in the top 3 lis of frequencies,
-        #  and if it is place it there and remove the smallest one
         return word_not_present
 
     def delete_word(self, word: str) -> bool:
@@ -61,7 +59,7 @@ class ListDictionary(BaseDictionary):
         @return: whether succeeded, e.g. return False when point not found
         """
         index_of_word = self._binary_search(0, len(self.word_frequencies), word, False)
-        word_already_present = False if index_of_word == -1 else True
+        word_already_present = index_of_word != -1
 
         if word_already_present:
             self.word_frequencies.remove(self.word_frequencies[index_of_word])
@@ -95,32 +93,38 @@ class ListDictionary(BaseDictionary):
 
     # Binary Insertion Sort (BinSort) - takes advantage of best case O(nlog(n)).
     # Only to be used when adding new items.
-    def _binary_insertion_sort_elements(self) -> None:
+    def _binary_insertion_sort_elements(self):
         for i in range(1, len(self.word_frequencies)):
             current = self.word_frequencies[i]
-            index_of_current = self._binary_search(0, i, current, True)
+            where_current_belongs = self._binary_search(0, i - 1, current.word, True)
             j = i
 
-            while j > index_of_current:
+            while j > where_current_belongs:
                 self.word_frequencies[j] = self.word_frequencies[j - 1]
                 j -= 1
 
-            self.word_frequencies[index_of_current] = current
+            self.word_frequencies[where_current_belongs] = current
 
     # Slightly modified version, so that it returns the closest index if not found or -1 if not found (up to caller).
     def _binary_search(self, left: int, right: int, word: str, return_closest: bool) -> int:
-        if left > right and not return_closest:
-            return -1
-        elif left > right and return_closest:
-            # Return the right index since it does not move from where the last element ACTUALLY is (alternatively,
-            # can return left - 1).
-            return right
+        if return_closest:
+            if left == right:
+                if self.word_frequencies[left].word > word:
+                    return left
+                else:
+                    return left + 1
+
+            if left > right:
+                return left
+        else:
+            if left > right:
+                return -1
 
         midpoint = (left + right) // 2
 
-        if word == self.word_frequencies[midpoint].word:
-            return midpoint
-        elif word < self.word_frequencies[midpoint].word:
+        if self.word_frequencies[midpoint].word < word:
+            return self._binary_search(midpoint + 1, right, word, return_closest)
+        elif self.word_frequencies[midpoint].word > word:
             return self._binary_search(left, midpoint - 1, word, return_closest)
         else:
-            return self._binary_search(midpoint + 1, right, word, return_closest)
+            return midpoint
