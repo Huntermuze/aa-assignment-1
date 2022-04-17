@@ -25,7 +25,7 @@ class TernarySearchTreeDictionary(BaseDictionary):
         """
         self.object_list = words_frequencies
         for obj in self.object_list:
-            self.create_tst(self.root_node, obj.word, obj.frequency, 0)
+            self.root_node = self.create_tst(self.root_node, obj.word, obj.frequency, 0)
         print("TST Creation Complete!!")
             
     def create_tst(self, cur_node, cur_word, cur_freq, index):
@@ -42,7 +42,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
         else:
             cur_node.frequency = cur_freq
             cur_node.end_word = True
-        
         return cur_node
 
     def search(self, word: str) -> int:
@@ -51,9 +50,32 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        # TO BE IMPLEMENTED
-        # place holder for return
-        return 0
+        final_node = self.search_tst(self.root_node, word, 0)
+        # The two conditions for a node not found are: 
+        # - node reaches end of tree before completion
+        # - node finishes but end_word is false
+        if final_node is None:
+            return 0
+        elif final_node.end_word is False:
+            return 0
+        else:
+            return final_node.frequency
+    
+    def search_tst(self, cur_node, word, index):
+        if cur_node is None:
+            return None
+        
+        cur_char = word[index]
+        
+        if cur_char < cur_node.letter:
+            return self.search_tst(cur_node.left, word, index)
+        elif cur_char > cur_node.letter:
+            return self.search_tst(cur_node.right, word, index)
+        elif index < len(word) - 1:
+            return self.search_tst(cur_node.middle, word, index+1)
+        else:
+            return cur_node
+        
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
