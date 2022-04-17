@@ -63,19 +63,26 @@ class HashTableDictionary(BaseDictionary):
         @param word: word to be autocompleted
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
-        top_most_frequent = []
+        most_frequent = []
+        words_to_ignore = []
 
-        # Utilising TimSort.
-        # Consider removing the reverse arg, as it may add additional complexity to TimSort (research).
-        # It might be better to do a linear scan over the KeyValue objects and handle them the same in List_dict
-        # for bias reasons and because O(n) < O(nlog(n)).
-        temp = sorted(self.word_frequencies.items(), key=lambda v: v[1], reverse=True)
+        # It is better to do a linear scan over the KeyValue objects and handle them the same in List_dict
+        # for bias reasons (minimises bias) and because in this instance, it is better to perform a linear scan
+        # rather than sorting first, then performing a binary search. The former wields a complexity of O(n), whilst
+        # the latter is O(nlog(n)), and no sorting algorithm can have a lower order (evident via mathematical proof).
+        # Hence, to ensure the lowest theoretical time complexity or order, we will use a simple linear scan, as the
+        # outer loop always runs 3 times, making it indifferent/insensitive to input (performance is constant).
+        for i in range(0, 3):
+            highest_frequency = 0
+            word_to_add = None
 
-        for kv in temp:
-            if len(top_most_frequent) == 3:
-                break
+            for kv in self.word_frequencies.items():
+                if kv[1] > highest_frequency and kv[0] not in words_to_ignore and kv[0][0:len(word)] == word:
+                    highest_frequency = kv[1]
+                    word_to_add = kv[0]
 
-            if kv[0][0:len(word)] == word:
-                top_most_frequent.append(WordFrequency(kv[0], kv[1]))
+            if highest_frequency != 0:
+                words_to_ignore.append(word_to_add)
+                most_frequent.append(WordFrequency(word_to_add, self.word_frequencies[word_to_add]))
 
-        return top_most_frequent
+        return most_frequent
