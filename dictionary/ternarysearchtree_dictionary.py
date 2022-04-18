@@ -126,12 +126,12 @@ class TernarySearchTreeDictionary(BaseDictionary):
         return []
     
     #  Print the all words using recursion (debugging purposes)
-    def printWords(self, node, output, index) :
-        if (node != None) :
-            self.printWords(node.left, output, index)    
-            self.printWords(node.middle, 
-                            output + str(node.letter), 
+    def printWords(self, cur_node: Node, output: str, index: int) :
+        if (cur_node != None) :
+            self.printWords(cur_node.left, output, index)    
+            self.printWords(cur_node.middle, 
+                            output + str(cur_node.letter), 
                             index + 1)
-            self.printWords(node.right, output, index)
-            if (node.end_word == True) :
-                print(" ", (output + node.letter) )
+            self.printWords(cur_node.right, output, index)
+            if (cur_node.end_word == True) :
+                print(" ", (output + cur_node.letter) )
