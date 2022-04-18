@@ -2,8 +2,8 @@ Found 'cute' with frequency 10
 Delete 'cute' failed
 Found 'cute' with frequency 10
 NOT Found 'book'
-Add 'book' failed
-NOT Found 'book'
+Add 'book' succeeded
+Found 'book' with frequency 10000
 Found 'apple' with frequency 300
 Delete 'apple' failed
 Found 'apple' with frequency 300

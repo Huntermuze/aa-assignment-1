@@ -23,25 +23,24 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param words_frequencies: list of (word, frequency) to be stored
         """
         for word_freq in words_frequencies:
-            self.root_node = self.create_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
+            self.root_node = self.add_to_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
         print("TST Creation Complete!!")
 
-    def create_tst(self, cur_node: Node, cur_word: str, cur_freq: int, index: int):
+    def add_to_tst(self, cur_node: Node, cur_word: str, cur_freq: int, index: int):
         cur_char = cur_word[index]
 
         if cur_node is None:
             cur_node = Node(cur_char)
 
         if cur_char < cur_node.letter:
-            cur_node.left = self.create_tst(cur_node.left, cur_word, cur_freq, index)
+            cur_node.left = self.add_to_tst(cur_node.left, cur_word, cur_freq, index)
         elif cur_char > cur_node.letter:
-            cur_node.right = self.create_tst(cur_node.right, cur_word, cur_freq, index)
+            cur_node.right = self.add_to_tst(cur_node.right, cur_word, cur_freq, index)
         elif index < len(cur_word) - 1:
-            cur_node.middle = self.create_tst(cur_node.middle, cur_word, cur_freq, index + 1)
+            cur_node.middle = self.add_to_tst(cur_node.middle, cur_word, cur_freq, index + 1)
         else:
             cur_node.frequency = cur_freq
             cur_node.end_word = True
-
         return cur_node
 
     def search(self, word: str) -> int:
@@ -50,16 +49,16 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        final_node = self.search_tst(self.root_node, word, 0)
+        find_node = self.search_tst(self.root_node, word, 0)
         # The two conditions for a node not found are: 
         # - node reaches end of tree before completion
         # - node finishes but end_word is false
-        if final_node is None:
+        if find_node is None:
             return 0
-        elif final_node.end_word is False:
+        elif find_node.end_word is False:
             return 0
         else:
-            return final_node.frequency
+            return find_node.frequency
 
     def search_tst(self, cur_node, word, index):
         if cur_node is None:
@@ -75,16 +74,22 @@ class TernarySearchTreeDictionary(BaseDictionary):
             return self.search_tst(cur_node.middle, word, index + 1)
         else:
             return cur_node
-
+    
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
         add a word and its frequency to the dictionary
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        # TO BE IMPLEMENTED
-        # place holder for return
-        return False
+        find_node = self.search_tst(self.root_node, word_frequency.word, 0)
+        if find_node is None:
+            self.add_to_tst(self.root_node, word_frequency.word, word_frequency.frequency, 0)
+            return True
+        elif find_node.end_word is False:
+            self.add_to_tst(self.root_node, word_frequency.word, word_frequency.frequency, 0)
+            return True
+        else:
+            return True
 
     def delete_word(self, word: str) -> bool:
         """
@@ -105,3 +110,19 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # TO BE IMPLEMENTED
         # place holder for return
         return []
+    
+    #  Print the all words using recursion (debugging purposes)
+    def printWords(self, node, output, index) :
+        if (node != None) :
+            #  Visit left subtree 
+            self.printWords(node.left, output, index)
+            if (node.end_word == True) :
+                #  Display word
+                print(" ", (output + node.letter) )
+            
+            #  Visit equal (middle) subtree
+            self.printWords(node.middle, 
+                            output + str(node.letter), 
+                            index + 1)
+            #  Visit left subtree
+            self.printWords(node.right, output, index)
