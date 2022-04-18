@@ -60,27 +60,28 @@ class TernarySearchTreeDictionary(BaseDictionary):
         else:
             return find_node.frequency
 
-    def search_tst(self, cur_node, word, index):
+    def search_tst(self, cur_node: Node, cur_word: str, index: int):
         if cur_node is None:
             return None
 
-        cur_char = word[index]
+        cur_char = cur_word[index]
 
         if cur_char < cur_node.letter:
-            return self.search_tst(cur_node.left, word, index)
+            return self.search_tst(cur_node.left, cur_word, index)
         elif cur_char > cur_node.letter:
-            return self.search_tst(cur_node.right, word, index)
-        elif index < len(word) - 1:
-            return self.search_tst(cur_node.middle, word, index + 1)
+            return self.search_tst(cur_node.right, cur_word, index)
+        elif index < len(cur_word) - 1:
+            return self.search_tst(cur_node.middle, cur_word, index + 1)
         else:
             return cur_node
-
+    
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
         add a word and its frequency to the dictionary
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
+        #self.printWords(self.root_node, "", 0)
         find_node = self.search_tst(self.root_node, word_frequency.word, 0)
         if find_node is None:
             self.add_to_tst(self.root_node, word_frequency.word, word_frequency.frequency, 0)
@@ -100,6 +101,19 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # TO BE IMPLEMENTED
         # place holder for return
         return False
+    
+    #def delete_from_tst(self, cur_node: Node, cur_word: str, index: int):
+        if cur_node is None:
+            return None
+        
+        cur_char = cur_word[index]
+        
+        if cur_char < cur_node.letter:
+            cur_node.left = self.delete_from_tst(cur_node.left, cur_word, index)
+        elif cur_char > cur_node.letter:
+            cur_node.right = self.delete_from_tst(cur_node.right, cur_word, index)
+        elif index < len(cur_word) - 1:
+            cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, index + 1)
 
     def autocomplete(self, word: str) -> List[WordFrequency]:
         """
@@ -110,18 +124,14 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # TO BE IMPLEMENTED
         # place holder for return
         return []
-
+    
     #  Print the all words using recursion (debugging purposes)
-    def print_words(self, node, output, index):
-        if node is not None:
-            #  Visit left subtree 
-            self.print_words(node.left, output, index)
-
-            if node.end_word:
-                #  Display word
-                print(" ", (output + node.letter))
-
-            #  Visit equal (middle) subtree
-            self.print_words(node.middle, output + str(node.letter), index + 1)
-            #  Visit left subtree
-            self.print_words(node.right, output, index)
+    def printWords(self, cur_node: Node, output: str, index: int) :
+        if (cur_node != None) :
+            self.printWords(cur_node.left, output, index)    
+            self.printWords(cur_node.middle, 
+                            output + str(cur_node.letter), 
+                            index + 1)
+            self.printWords(cur_node.right, output, index)
+            if (cur_node.end_word == True) :
+                print(" ", (output + cur_node.letter) )
