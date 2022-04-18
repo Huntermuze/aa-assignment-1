@@ -99,22 +99,33 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        # TO BE IMPLEMENTED
-        # place holder for return
-        return False
+        word_exists = self.search(word) != 0
 
-        # def delete_from_tst(self, cur_node: Node, cur_word: str, index: int):
-        # if cur_node is None:
-        #     return None
-        #
-        # cur_char = cur_word[index]
-        #
-        # if cur_char < cur_node.letter:
-        #     cur_node.left = self.delete_from_tst(cur_node.left, cur_word, index)
-        # elif cur_char > cur_node.letter:
-        #     cur_node.right = self.delete_from_tst(cur_node.right, cur_word, index)
-        # elif index < len(cur_word) - 1:
-        #     cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, index + 1)
+        if word_exists:
+            self.delete_from_tst(self.root_node, word, 0)
+
+        return word_exists
+
+    def delete_from_tst(self, cur_node: Node, cur_word: str, cur_index: int):
+        # Do not need to check if the word exists, since that is ensured prior to this method's invocation.
+        cur_char = cur_word[cur_index]
+
+        if cur_char < cur_node.letter:
+            cur_node.left = self.delete_from_tst(cur_node.left, cur_word, cur_index)
+        elif cur_char > cur_node.letter:
+            cur_node.right = self.delete_from_tst(cur_node.right, cur_word, cur_index)
+        elif cur_index < len(cur_word) - 1:
+            cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, cur_index + 1)
+        else:
+            # If it is a leaf, then we can simply just remove it.
+            if cur_node.left is None and cur_node.right is None and cur_node.middle is None:
+                return None
+            # In this case, it has at least one child, and is considered an end word.
+            else:
+                cur_node.frequency = 0
+                cur_node.end_word = False
+
+        return cur_node
 
     def autocomplete(self, word: str) -> List[WordFrequency]:
         """
@@ -142,3 +153,8 @@ if __name__ == '__main__':
     tst.build_dictionary([WordFrequency("one", 10), WordFrequency("abc", 2),
                           WordFrequency("pop", 4), WordFrequency("ono", 53)])
     tst.print_words(tst.root_node, "", 0)
+    tst.delete_word("abc")
+    tst.delete_word("ono")
+    print()
+    tst.print_words(tst.root_node, "", 0)
+
