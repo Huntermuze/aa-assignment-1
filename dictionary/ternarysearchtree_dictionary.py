@@ -74,7 +74,7 @@ class TernarySearchTreeDictionary(BaseDictionary):
             return self.search_tst(cur_node.middle, word, index + 1)
         else:
             return cur_node
-    
+
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
         add a word and its frequency to the dictionary
@@ -110,19 +110,18 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # TO BE IMPLEMENTED
         # place holder for return
         return []
-    
+
     #  Print the all words using recursion (debugging purposes)
-    def printWords(self, node, output, index) :
-        if (node != None) :
+    def print_words(self, node, output, index):
+        if node is not None:
             #  Visit left subtree 
-            self.printWords(node.left, output, index)
-            if (node.end_word == True) :
+            self.print_words(node.left, output, index)
+
+            if node.end_word:
                 #  Display word
-                print(" ", (output + node.letter) )
-            
+                print(" ", (output + node.letter))
+
             #  Visit equal (middle) subtree
-            self.printWords(node.middle, 
-                            output + str(node.letter), 
-                            index + 1)
+            self.print_words(node.middle, output + str(node.letter), index + 1)
             #  Visit left subtree
-            self.printWords(node.right, output, index)
+            self.print_words(node.right, output, index)
