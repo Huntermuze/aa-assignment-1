@@ -135,3 +135,10 @@ class TernarySearchTreeDictionary(BaseDictionary):
 
             if cur_node.end_word:
                 print(" ", (output + cur_node.letter))
+
+
+if __name__ == '__main__':
+    tst = TernarySearchTreeDictionary()
+    tst.build_dictionary([WordFrequency("one", 10), WordFrequency("abc", 2),
+                          WordFrequency("pop", 4), WordFrequency("ono", 53)])
+    tst.print_words(tst.root_node, "", 0)
