@@ -26,18 +26,18 @@ class TernarySearchTreeDictionary(BaseDictionary):
             self.root_node = self.add_to_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
         print("TST Creation Complete!!")
 
-    def add_to_tst(self, cur_node: Node, cur_word: str, cur_freq: int, index: int):
-        cur_char = cur_word[index]
+    def add_to_tst(self, cur_node: Node, cur_word: str, cur_freq: int, cur_index: int):
+        cur_char = cur_word[cur_index]
 
         if cur_node is None:
             cur_node = Node(cur_char)
 
         if cur_char < cur_node.letter:
-            cur_node.left = self.add_to_tst(cur_node.left, cur_word, cur_freq, index)
+            cur_node.left = self.add_to_tst(cur_node.left, cur_word, cur_freq, cur_index)
         elif cur_char > cur_node.letter:
-            cur_node.right = self.add_to_tst(cur_node.right, cur_word, cur_freq, index)
-        elif index < len(cur_word) - 1:
-            cur_node.middle = self.add_to_tst(cur_node.middle, cur_word, cur_freq, index + 1)
+            cur_node.right = self.add_to_tst(cur_node.right, cur_word, cur_freq, cur_index)
+        elif cur_index < len(cur_word) - 1:
+            cur_node.middle = self.add_to_tst(cur_node.middle, cur_word, cur_freq, cur_index + 1)
         else:
             cur_node.frequency = cur_freq
             cur_node.end_word = True
@@ -60,18 +60,18 @@ class TernarySearchTreeDictionary(BaseDictionary):
         else:
             return find_node.frequency
 
-    def search_tst(self, cur_node: Node, cur_word: str, index: int):
+    def search_tst(self, cur_node: Node, cur_word: str, cur_index: int):
         if cur_node is None:
             return None
 
-        cur_char = cur_word[index]
+        cur_char = cur_word[cur_index]
 
         if cur_char < cur_node.letter:
-            return self.search_tst(cur_node.left, cur_word, index)
+            return self.search_tst(cur_node.left, cur_word, cur_index)
         elif cur_char > cur_node.letter:
-            return self.search_tst(cur_node.right, cur_word, index)
-        elif index < len(cur_word) - 1:
-            return self.search_tst(cur_node.middle, cur_word, index + 1)
+            return self.search_tst(cur_node.right, cur_word, cur_index)
+        elif cur_index < len(cur_word) - 1:
+            return self.search_tst(cur_node.middle, cur_word, cur_index + 1)
         else:
             return cur_node
     
@@ -102,18 +102,18 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # place holder for return
         return False
     
-    #def delete_from_tst(self, cur_node: Node, cur_word: str, index: int):
+    #def delete_from_tst(self, cur_node: Node, cur_word: str, cur_index: int):
         if cur_node is None:
             return None
         
-        cur_char = cur_word[index]
+        cur_char = cur_word[cur_index]
         
         if cur_char < cur_node.letter:
-            cur_node.left = self.delete_from_tst(cur_node.left, cur_word, index)
+            cur_node.left = self.delete_from_tst(cur_node.left, cur_word, cur_index)
         elif cur_char > cur_node.letter:
-            cur_node.right = self.delete_from_tst(cur_node.right, cur_word, index)
-        elif index < len(cur_word) - 1:
-            cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, index + 1)
+            cur_node.right = self.delete_from_tst(cur_node.right, cur_word, cur_index)
+        elif cur_index < len(cur_word) - 1:
+            cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, cur_index + 1)
 
     def autocomplete(self, word: str) -> List[WordFrequency]:
         """
@@ -126,12 +126,12 @@ class TernarySearchTreeDictionary(BaseDictionary):
         return []
     
     #  Print the all words using recursion (debugging purposes)
-    def printWords(self, cur_node: Node, output: str, index: int) :
+    def printWords(self, cur_node: Node, output: str, cur_index: int) :
         if (cur_node != None) :
-            self.printWords(cur_node.left, output, index)    
+            self.printWords(cur_node.left, output, cur_index)    
             self.printWords(cur_node.middle, 
                             output + str(cur_node.letter), 
-                            index + 1)
-            self.printWords(cur_node.right, output, index)
+                            cur_index + 1)
+            self.printWords(cur_node.right, output, cur_index)
             if (cur_node.end_word == True) :
                 print(" ", (output + cur_node.letter) )
