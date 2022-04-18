@@ -102,18 +102,18 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # place holder for return
         return False
 
-        # def delete_from_tst(self, cur_node: Node, cur_word: str, index: int):
+        # def delete_from_tst(self, cur_node: Node, cur_word: str, cur_index: int):
         # if cur_node is None:
         #     return None
         #
-        # cur_char = cur_word[index]
+        # cur_char = cur_word[cur_index]
         #
         # if cur_char < cur_node.letter:
-        #     cur_node.left = self.delete_from_tst(cur_node.left, cur_word, index)
+        #     cur_node.left = self.delete_from_tst(cur_node.left, cur_word, cur_index)
         # elif cur_char > cur_node.letter:
-        #     cur_node.right = self.delete_from_tst(cur_node.right, cur_word, index)
-        # elif index < len(cur_word) - 1:
-        #     cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, index + 1)
+        #     cur_node.right = self.delete_from_tst(cur_node.right, cur_word, cur_index)
+        # elif cur_index < len(cur_word) - 1:
+        #     cur_node.middle = self.delete_from_tst(cur_node.middle, cur_word, cur_index + 1)
 
     def autocomplete(self, word: str) -> List[WordFrequency]:
         """
@@ -126,11 +126,11 @@ class TernarySearchTreeDictionary(BaseDictionary):
         return []
 
     #  Print the all words using recursion (debugging purposes)
-    def print_words(self, cur_node: Node, output: str, index: int):
+    def print_words(self, cur_node: Node, output: str, cur_index: int):
         if cur_node is not None:
-            self.print_words(cur_node.left, output, index)
-            self.print_words(cur_node.middle, output + str(cur_node.letter), index + 1)
-            self.print_words(cur_node.right, output, index)
+            self.print_words(cur_node.left, output, cur_index)
+            self.print_words(cur_node.middle, output + str(cur_node.letter), cur_index + 1)
+            self.print_words(cur_node.right, output, cur_index)
 
             if cur_node.end_word:
                 print(" ", (output + cur_node.letter))
