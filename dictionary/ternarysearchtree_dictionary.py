@@ -133,8 +133,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word: word to be autocompleted
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
-        # TO BE IMPLEMENTED
-        # place holder for return
         return []
 
     #  Print the all words using recursion (debugging purposes)
