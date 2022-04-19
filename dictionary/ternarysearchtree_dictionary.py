@@ -24,7 +24,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
         """
         for word_freq in words_frequencies:
             self.root_node = self.add_to_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
-        print("TST Creation Complete!!")
 
     def add_to_tst(self, cur_node: Node, cur_word: str, cur_freq: int, cur_index: int):
         cur_char = cur_word[cur_index]
@@ -51,15 +50,14 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @return: frequency > 0 if found and 0 if NOT found
         """
         find_node = self.search_tst(self.root_node, word, 0)
+
         # The two conditions for a node not found are: 
         # - node reaches end of tree before completion
         # - node finishes but end_word is false
-        if find_node is None:
+        if find_node is None or not find_node.end_word:
             return 0
-        elif find_node.end_word is False:
-            return 0
-        else:
-            return find_node.frequency
+
+        return find_node.frequency
 
     def search_tst(self, cur_node: Node, cur_word: str, cur_index: int):
         # Return none if such node does not exist (i.e., the word does not exist).
@@ -83,16 +81,13 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        # self.printWords(self.root_node, "", 0)
         find_node = self.search_tst(self.root_node, word_frequency.word, 0)
-        if find_node is None:
+        node_does_not_exist = find_node is None or find_node.end_word is False
+
+        if node_does_not_exist:
             self.add_to_tst(self.root_node, word_frequency.word, word_frequency.frequency, 0)
-            return True
-        elif find_node.end_word is False:
-            self.add_to_tst(self.root_node, word_frequency.word, word_frequency.frequency, 0)
-            return True
-        else:
-            return True
+
+        return node_does_not_exist
 
     def delete_word(self, word: str) -> bool:
         """
@@ -202,12 +197,3 @@ class TernarySearchTreeDictionary(BaseDictionary):
 
             if cur_node.end_word:
                 children_suffixes.append([output + cur_node.letter, cur_node.frequency])
-
-    def print_words(self, cur_node: Node, output: str):
-        if cur_node is not None:
-            self.print_words(cur_node.left, output)
-            self.print_words(cur_node.middle, output + str(cur_node.letter))
-            self.print_words(cur_node.right, output)
-
-            if cur_node.end_word:
-                print(output + cur_node.letter, end=' ')
