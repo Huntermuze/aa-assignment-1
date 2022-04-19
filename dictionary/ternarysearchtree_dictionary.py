@@ -65,8 +65,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # Return none if such node does not exist (i.e., the word does not exist).
         if cur_node is None:
             return None
-        else:
-            print("SEARCH CURR " + cur_node.letter)
 
         cur_char = cur_word[cur_index]
 
@@ -137,34 +135,40 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
 
-        # TODO NEED TO MAKE IT TAKE INTO ACCOUNT WORDS BEFORE IT.
-        print()
-        self.print_words(self.root_node, "")
-        print()
-        print(self.root_node.letter)
-        print(self.root_node.middle.letter)
+        # This method utilises the following equation:
+        # word = prefix + suffix, where suffix is variable and prefix is predefined.
         most_frequent = []
         words_to_ignore = []
         children_suffixes = []
 
-        # CASE 1: If the prefix is the root node, just return the entire middle subtree.
+        # CASE 1: If the prefix is the root node's letter (length = 1), just scan the entire middle subtree.
         if word == self.root_node.letter:
             root_of_suffixes = self.root_node.middle
+        # CASE 2: If the prefix is not the root node,
         else:
             root_of_suffixes = self.search_tst(self.root_node, word, 0)
-            # print(root_of_suffixes.letter)
+            # If the word is actually inside the tst, then we can process it (e.g., word = farm will return null).
+            if root_of_suffixes is not None:
+                # SUB-CASE2: If the prefix is itself a word, then we should prepend the prefix to the list, as it will
+                # not be processed in the get_all_children_words() method, since we only use its middle node.
+                if root_of_suffixes.end_word:
+                    # Leave the word string empty, as it will be added in CASE 5 (prefix + suffix = word).
+                    children_suffixes.append(["", root_of_suffixes.frequency])
 
+                # Use the middle node of the root_of_suffixes node, because we only want sub-strings of the prefix,
+                # but do not want different words that share prefix - 1 letters.
+                root_of_suffixes = root_of_suffixes.middle
+
+        # Get all the children of the root_of_suffixes.
         self.get_all_children_words(root_of_suffixes, "", children_suffixes)
-        print(word)
-        print(children_suffixes)
 
-        # CASE 2: If no words start with the prefix, return an empty list.
+        # CASE 3: If no words start with the prefix, return an empty list.
         if len(children_suffixes) <= 0:
             return most_frequent
-        # CASE 3: If the prefix is itself the entire word (aka. the last letter of the prefix is an end_word).
-        elif root_of_suffixes.end_word:
+        # CASE 4: If the prefix is itself the entire word (aka. the last letter of the prefix is an end_word).
+        elif root_of_suffixes.end_word and len(children_suffixes) == 1:
             return [WordFrequency(word, root_of_suffixes.frequency)]
-        # CASE 4: If the prefix has n usages, then find all the usages and add them to a list, selecting the three
+        # CASE 5: If the prefix has n usages, then find all the usages and add them to a list, selecting the three
         # with the highest frequency.
         else:
             for i in range(0, 3):
@@ -177,14 +181,14 @@ class TernarySearchTreeDictionary(BaseDictionary):
                         word_to_add = suffix_node[0]
 
                 if highest_frequency != 0:
-
                     words_to_ignore.append(word_to_add)
-                    # Check if the prefix is greater than 1 or if the prefix is the root node (in both cases,
-                    # we want to include the first letter of the prefix, as it will get chopped off in the
-                    # get_all_children_words, as the base_node [i.e., the one we start with] is not included).
-                    if len(word) > 1 or word == self.root_node.letter:
-                        # Prefix + suffix = full word.
-                        word_to_add = word[0] + word_to_add
+
+                    # Check if the prefix length is greater than 0. We want to include the prefix, as it will get
+                    # chopped off in the get_all_children_words, as the base_node [i.e., the one we start with]
+                    # is not included, so as to prevent partial sub-strings from being added to the list).
+                    if len(word) > 0:
+                        # Recall the earlier equation: word = prefix + suffix => word_to_add = word + word_to_add.
+                        word_to_add = word + word_to_add
 
                     most_frequent.append(WordFrequency(word_to_add, highest_frequency))
 
@@ -192,7 +196,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
 
     def get_all_children_words(self, cur_node: Node, output: str, children_suffixes: list):
         if cur_node is not None:
-            print("CUR LETTER: " + cur_node.letter)
             self.get_all_children_words(cur_node.left, output, children_suffixes)
             self.get_all_children_words(cur_node.middle, output + str(cur_node.letter), children_suffixes)
             self.get_all_children_words(cur_node.right, output, children_suffixes)
@@ -200,7 +203,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
             if cur_node.end_word:
                 children_suffixes.append([output + cur_node.letter, cur_node.frequency])
 
-    # Print the all words using recursion (debugging purposes)
     def print_words(self, cur_node: Node, output: str):
         if cur_node is not None:
             self.print_words(cur_node.left, output)
@@ -208,19 +210,4 @@ class TernarySearchTreeDictionary(BaseDictionary):
             self.print_words(cur_node.right, output)
 
             if cur_node.end_word:
-                print(" ", (output + cur_node.letter), end=' ')
-
-
-if __name__ == '__main__':
-    tst = TernarySearchTreeDictionary()
-    tst.build_dictionary([WordFrequency("one", 10), WordFrequency("abc", 2),
-                          WordFrequency("pop", 4), WordFrequency("ono", 53)])
-    tst.print_words(tst.root_node, "")
-    # tst.delete_word("abc")
-    # tst.delete_word("ono")
-    # print()
-    # tst.print_words(tst.root_node, "")
-    print()
-    words = tst.autocomplete("on")
-    for x in words:
-        print(x.word, x.frequency)
+                print(output + cur_node.letter, end=' ')

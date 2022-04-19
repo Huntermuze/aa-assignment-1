@@ -9,7 +9,7 @@ Delete 'apple' succeeded
 NOT Found 'apple'
 Delete 'apple' failed
 Autocomplete for 'c': [ calm: 1000  cuts: 50  cut: 30  ]
-Autocomplete for 'cut': [ cut: 30  ]
+Autocomplete for 'cut': [ cuts: 50  cut: 30  ]
 Autocomplete for 'farms': [ ]
 Delete 'cut' succeeded
-Autocomplete for 'cut': [ cts: 50  cb: 15  ]
+Autocomplete for 'cut': [ cuts: 50  ]
