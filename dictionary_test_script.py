@@ -10,7 +10,8 @@
 #
 # Usage, assuming you are in the directory where the test script "dictionary_test_script.py" is located.
 #
-# > python dictionary_test_script.py [-v] <codeDirectory> <name of implementation to test> <data filename> <list of input files to test on>
+# > python dictionary_test_script.py [-v] <codeDirectory> <name of implementation to test> <data filename> <list of
+# input files to test on>
 #
 # options:
 #
@@ -49,15 +50,11 @@
 # @Son Hoang Dau, 2022
 #
 
-import string
-import csv
 import getopt
 import os
 import os.path
-import re
 import sys
 import subprocess as sp
-import difflib
 
 
 def main():
