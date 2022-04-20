@@ -35,10 +35,10 @@ def execute_command(agent, input_sizes, command):
                 avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1) * 1000 * 1000
         elif command == 'D':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=1) * 1000 * 1000
+                avg += timeit.timeit(lambda: agent.delete_word(x), number=1) * 1000 * 1000
         elif command == 'AC':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=1) * 1000 * 1000
+                avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000
 
         times.append(avg / 1000)
         print("Time " + str(i + 1) + ": " + str(times[i]))
