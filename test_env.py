@@ -1,8 +1,11 @@
 import sys
 import timeit
 import matplotlib.pyplot as plt
+from scipy.interpolate import make_interp_spline
+import numpy as np
+from dictionary.node import Node
+from AxisPair import AxisPair
 from dictionary.word_frequency import WordFrequency
-from dictionary.base_dictionary import BaseDictionary
 from dictionary.list_dictionary import ListDictionary
 from dictionary.hashtable_dictionary import HashTableDictionary
 from dictionary.ternarysearchtree_dictionary import TernarySearchTreeDictionary
@@ -13,44 +16,78 @@ def usage():
     Print help/usage message.
     """
     print('python3 test_env.py', '<approach>')
-    print('<approach> = <list | hashtable | tst>')
+    print('<approach> = <list | hashtable | tst | all>')
     sys.exit(1)
 
 
-def execute_command(agent, input_sizes, command):
-    word_freq_to_add = get_eight_objects(command)
+def execute_commands(argument, input_sizes, command):
+    word_freq_to_add = get_command_arguments(command)
     times = []
-    i = 0
 
-    for n in input_sizes:
-        agent.build_dictionary(get_word_freq_list(n))
-        avg = 0
+    # Append a new sublist for each requested agent.
+    for i in range(0, len(get_agents(argument))):
+        times.append([])
 
-        if command == 'S':
-            for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.search(x), number=1) * 1000 * 1000
-        elif command == 'A':
-            for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1) * 1000 * 1000
-        elif command == 'D':
-            for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.delete_word(x), number=1) * 1000 * 1000
-        elif command == 'AC':
-            for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000
+    for (input_index, n) in enumerate(input_sizes):
+        agents = get_agents(argument)
 
-        times.append(avg / 1000)
-        print("Time " + str(i + 1) + ": " + str(times[i]))
-        i += 1
+        for (index, agent) in enumerate(agents):
+            avg = 0
 
-    plt.plot(input_sizes, times)
+            agent.build_dictionary(get_word_freq_list(n))
+
+            if command == 'S':
+                for x in word_freq_to_add:
+                    avg += timeit.timeit(lambda: agent.search(x), number=1) * 1000 * 1000
+            elif command == 'A':
+                for x in word_freq_to_add:
+                    avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1) * 1000 * 1000
+            elif command == 'D':
+                for x in word_freq_to_add:
+                    avg += timeit.timeit(lambda: agent.delete_word(x), number=1) * 1000 * 1000
+            elif command == 'AC':
+                for x in word_freq_to_add:
+                    avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000
+
+            times[index].append(avg / 1000)
+            print("AGENT [" + str(index + 1) + "] > " + "Time " + str(input_index + 1) + ": " + str(times[index][input_index]))
+
+    axes = []
+    for agent_time in times:
+        axes.append(AxisPair(input_sizes, agent_time))
+
+    plot_graph(axes)
+
+    # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
+    # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
+    #
+    # spl = make_interp_spline(numeric_input_sizes, times, k=3)
+    # graph_smooth = spl(x)
+    # plot_graph([AxisPair(x, graph_smooth)])
+
+
+def plot_graph(axes):
+    if len(axes) > 0:
+        for idx, axes_pair in enumerate(axes):
+            title = "List"
+
+            if idx == 2:
+                title = "Hashtable"
+            elif idx == 3:
+                title = "TST"
+
+            plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
+    else:
+        return
+
     plt.xlabel('Number of Elements')
     plt.ylabel('Time for Operation (μs)')
     plt.title('Benchmarking')
+    plt.legend(loc="upper left")
     plt.show()
 
 
-def get_eight_objects(command):
+def get_command_arguments(command):
     words_frequencies_from_file = []
     # scenario 1
     if command == 'A':
@@ -88,9 +125,24 @@ def get_word_freq_list(n):
     return words_frequencies_from_file
 
 
+def get_agents(argument):
+    if argument == 'list':
+        return [ListDictionary()]
+    elif argument == 'hashtable':
+        return [HashTableDictionary()]
+    elif argument == 'tst':
+        return [TernarySearchTreeDictionary()]
+    elif argument == 'all':
+        return [ListDictionary(), HashTableDictionary(), TernarySearchTreeDictionary()]
+    else:
+        print('Incorrect argument value.')
+        usage()
+
+
 if __name__ == '__main__':
     input_sizes_grow = ['50', '500', '1k', '2k', '5k', '10k', '50k', '100k']
     input_sizes_shrink = ['100k', '50k', '10k', '5k', '2k', '1k', '500', '50']
+
     # Fetch the command line arguments
     args = sys.argv
 
@@ -98,22 +150,9 @@ if __name__ == '__main__':
         print('Incorrect number of arguments.')
         usage()
 
-    # initialise search agent
-    agent: BaseDictionary = None
-
-    if args[1] == 'list':
-        agent = ListDictionary()
-    elif args[1] == 'hashtable':
-        agent = HashTableDictionary()
-    elif args[1] == 'tst':
-        agent = TernarySearchTreeDictionary()
-    else:
-        print('Incorrect argument value.')
-        usage()
-
     # search
     command = input("Please enter a command (S, A, D, AC): ")
     if command == 'S' or command == 'A' or command == 'D' or command == 'AC':
-        execute_command(agent, input_sizes_grow, command)
+        execute_commands(args[1], input_sizes_grow, command)
     else:
         print('Unknown command.')
