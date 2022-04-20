@@ -58,7 +58,7 @@ class ListDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        index_of_word = self._binary_search(0, len(self.word_frequencies), word, False)
+        index_of_word = self._binary_search(0, len(self.word_frequencies) - 1, word, False)
         word_already_present = index_of_word != -1
 
         if word_already_present:
