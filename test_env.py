@@ -25,14 +25,10 @@ def execute_commands(argument, input_sizes, command):
     word_freq_to_add = get_command_arguments(command)
     times = []
 
-    # Append a new sublist for each requested agent.
-    for i in range(0, len(get_agents(argument))):
-        times.append([])
-
-    for (input_index, n) in enumerate(input_sizes):
+    for (i, n) in enumerate(input_sizes):
         agents = get_agents(argument)
 
-        for (index, agent) in enumerate(agents):
+        for (j, agent) in enumerate(agents):
             avg = 0
 
             agent.build_dictionary(get_word_freq_list(n))
@@ -50,18 +46,10 @@ def execute_commands(argument, input_sizes, command):
                 for x in word_freq_to_add:
                     avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000 * 1000
 
-            times[index].append(math.log(avg / 1000, 10))
-            print("AGENT [" + str(index + 1) + "] > " + "Time " + str(input_index + 1) + ": " + str(
-                times[index][input_index]))
+            times.append(math.log(avg / 1000, 10))
+            print("AGENT [" + str(j + 1) + "] > " + "Time " + str(i + 1) + ": " + str(times[i + j]))
 
     return times
-
-    # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
-    # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
-    #
-    # spl = make_interp_spline(numeric_input_sizes, times, k=3)
-    # graph_smooth = spl(x)
-    # plot_graph([AxisPair(x, graph_smooth)])
 
 
 def plot_graph(axes, x_axis_min, x_axis_max, command):
@@ -87,7 +75,7 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
         graph_title = 'Delete Benchmarking'
     elif command == 'AC':
         graph_title = 'Autocomplete Benchmarking'
-        
+
     plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
     plt.ylabel('Log of Time per Operation (ns)')
@@ -100,7 +88,7 @@ def get_command_arguments(command):
     words_frequencies_from_file = []
     # scenario 1
     if command == 'A':
-        data_file = open("50_inputs_add", 'r')
+        data_file = open("20_inputs_add", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -111,16 +99,16 @@ def get_command_arguments(command):
         return words_frequencies_from_file
     # scenario 2
     elif command == 'D':
-        data_file = open("50_inputs_delete", 'r')
+        data_file = open("20_inputs_delete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
             words_frequencies_from_file.append(word)
         data_file.close()
         return words_frequencies_from_file
-    # scenario 3 
+    # scenario 3
     elif command == 'S':
-        data_file = open("50_inputs_search", 'r')
+        data_file = open("20_inputs_search", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -128,7 +116,7 @@ def get_command_arguments(command):
         data_file.close()
         return words_frequencies_from_file
     elif command == 'AC':
-        data_file = open("50_inputs_autocomplete", 'r')
+        data_file = open("10_inputs_autocomplete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -136,52 +124,41 @@ def get_command_arguments(command):
         data_file.close()
         return words_frequencies_from_file
 
-def final_analysis(argument, input_sizes, command):
-    all_the_times = []
-    upper_bound = 10
-    for iteration in range(0, upper_bound):
-        all_the_times.append(execute_commands(argument, input_sizes, command))
 
-    axes = []
-    total_list_times = []
-    total_hash_times = []
-    total_tst_times = []
+def final_analysis(argument, input_sizes, command):
     total_times = []
+    axes = []
     list_times = []
     hash_times = []
     tst_times = []
-    # TODO get better names for these variables as its confusing asf.
+    upper_bound = 10
 
-    # The value return from execute_commands is a list of lists, where each element is a list containing the 8 times
-    # of each input_size. If there are more than 1 elements in this list, then that menas "all" was requested, and
-    # there are 3 lists (containing 8 elements each) containing the times for each data structure's algorithm (A, D, etc).
+    for iteration in range(0, upper_bound):
+        total_times.append(execute_commands(argument, input_sizes, command))
 
-    # need to handle the case where only 1 structure is requested, and other case where all 3 are requested ("all").
+    for run in total_times:
+        list_times.append(run[0::3])
+        hash_times.append(run[1::3])
+        tst_times.append(run[2::3])
 
-    for times in all_the_times:
-        for agent_time in times:
-            total_times.append(agent_time)
-            
-    list_times.append(total_times[0::3])
-    list_times = np.array([list_times[0][0], list_times[0][1], list_times[0][2], list_times[0][3], list_times[0][4], list_times[0][5], list_times[0][6], list_times[0][7], list_times[0][8], list_times[0][9]])
-    hash_times.append(total_times[1::3])
-    hash_times = np.array([hash_times[0][0], hash_times[0][1], hash_times[0][2], hash_times[0][3], hash_times[0][4], hash_times[0][5], hash_times[0][6], hash_times[0][7], hash_times[0][8], hash_times[0][9]])
-    tst_times.append(total_times[2::3])
-    tst_times = np.array([tst_times[0][0], tst_times[0][1], tst_times[0][2], tst_times[0][3], tst_times[0][4], tst_times[0][5], tst_times[0][6], tst_times[0][7], tst_times[0][8], tst_times[0][9]])
-    #for iteration in range(0, upper_bound):
-        #total_list_times += np.array([list_times[0][iteration]])
-        #total_hash_times += np.array([hash_times[0][iteration]])
-        #total_tst_times += np.array([tst_times[0][iteration]])
-    #print(list_times)
-        
+    list_times = np.array(list_times)
+    hash_times = np.array(hash_times)
+    tst_times = np.array(tst_times)
+
     total_list_times = np.average(list_times, axis=0)
     total_hash_times = np.average(hash_times, axis=0)
     total_tst_times = np.average(tst_times, axis=0)
-    #print(total_list_times)
-    
+
     axes.append(AxisPair(input_sizes, total_list_times))
     axes.append(AxisPair(input_sizes, total_hash_times))
     axes.append(AxisPair(input_sizes, total_tst_times))
+
+    # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
+    # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
+    #
+    # spl = make_interp_spline(numeric_input_sizes, times, k=3)
+    # graph_smooth = spl(x)
+    # plot_graph([AxisPair(x, graph_smooth)])
 
     plot_graph(axes, input_sizes[0], input_sizes[-1], command)
 
