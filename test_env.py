@@ -56,7 +56,7 @@ def get_eight_objects(command):
     words_frequencies_from_file = []
     # scenario 1
     if command == 'A':
-        data_file = open("1k_inputs_add", 'r')
+        data_file = open("50_inputs_add", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]

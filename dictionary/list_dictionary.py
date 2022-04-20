@@ -31,7 +31,7 @@ class ListDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        index = self._binary_search(0, len(self.word_frequencies), word, False)
+        index = self._binary_search(0, len(self.word_frequencies) - 1, word, False)
 
         if index != -1:
             return self.word_frequencies[index].frequency
