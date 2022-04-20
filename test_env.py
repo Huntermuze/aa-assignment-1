@@ -71,9 +71,9 @@ def plot_graph(axes):
         for idx, axes_pair in enumerate(axes):
             title = "List"
 
-            if idx == 2:
+            if idx == 1:
                 title = "Hashtable"
-            elif idx == 3:
+            elif idx == 2:
                 title = "TST"
 
             plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
