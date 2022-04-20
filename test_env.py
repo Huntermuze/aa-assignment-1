@@ -8,6 +8,7 @@ from dictionary.list_dictionary import ListDictionary
 from dictionary.hashtable_dictionary import HashTableDictionary
 from dictionary.ternarysearchtree_dictionary import TernarySearchTreeDictionary
 
+
 def usage():
     """
     Print help/usage message.
@@ -16,23 +17,28 @@ def usage():
     print('<approach> = <list | hashtable | tst>')
     sys.exit(1)
 
+
 def execute_command(agent, input_sizes, command):
     word_freq_to_add = get_eight_objects(command)
     times = []
     i = 0
-    
+
     for n in input_sizes:
         agent.build_dictionary(get_word_freq_list(n))
         if command == 'S':
-            times.append(timeit.timeit(lambda: agent.search(word_freq_to_add[i]), number=1))
+            times.append(timeit.timeit(lambda: agent.search(word_freq_to_add[i]), number=5))
         elif command == 'A':
-            times.append(timeit.timeit(lambda: agent.add_word_frequency(word_freq_to_add[i]), number=1))
+            avg = 0
+            for x in word_freq_to_add:
+                avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1)
+            times.append(avg / 1000)
         elif command == 'D':
-            times.append(timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=1))
+            times.append(timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=5))
         elif command == 'AC':
-            times.append(timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=1))
+            times.append(timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=5))
         print("Time " + str(i + 1) + ": " + str(times[i]))
         i += 1
+
     plt.plot(input_sizes, times)
     plt.xlabel('Number of Elements')
     plt.ylabel('Time for Operation')
@@ -40,11 +46,12 @@ def execute_command(agent, input_sizes, command):
     plt.show()
     return
 
+
 def get_eight_objects(command):
     words_frequencies_from_file = []
     # scenario 1
     if command == 'A':
-        data_file = open("eight_inputs_add", 'r')
+        data_file = open("1k_inputs_add", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -52,8 +59,8 @@ def get_eight_objects(command):
             word_frequency = WordFrequency(word, frequency)  # each line contains a word and its frequency
             words_frequencies_from_file.append(word_frequency)
         data_file.close()
-        return words_frequencies_from_file  
-    # scenario 2
+        return words_frequencies_from_file
+        # scenario 2
     elif command == 'D':
         data_file = open("eight_inputs_delete", 'r')
         for line in data_file:
@@ -63,7 +70,8 @@ def get_eight_objects(command):
         data_file.close()
         return words_frequencies_from_file
     # scenario 3 (yet to be implemented)
-    
+
+
 def get_word_freq_list(n):
     words_frequencies_from_file = []
     data_file = open("input_" + n, 'r')
@@ -75,6 +83,7 @@ def get_word_freq_list(n):
         words_frequencies_from_file.append(word_frequency)
     data_file.close()
     return words_frequencies_from_file
+
 
 if __name__ == '__main__':
     input_sizes_grow = ['50', '500', '1k', '2k', '5k', '10k', '50k', '100k']
@@ -88,6 +97,7 @@ if __name__ == '__main__':
 
     # initialise search agent
     agent: BaseDictionary = None
+
     if args[1] == 'list':
         agent = ListDictionary()
     elif args[1] == 'hashtable':
