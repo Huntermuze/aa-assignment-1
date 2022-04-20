@@ -88,7 +88,7 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
     elif command == 'AC':
         graph_title = 'Autocomplete Benchmarking'
         
-    plt.xlabel('Number of Elements')
+    plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
     plt.ylabel('Log of Time per Operation (ns)')
     plt.title(graph_title)
