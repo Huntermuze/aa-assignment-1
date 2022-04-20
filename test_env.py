@@ -29,16 +29,16 @@ def execute_command(agent, input_sizes, command):
 
         if command == 'S':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.search(x), number=1)
+                avg += timeit.timeit(lambda: agent.search(x), number=1) * 1000 * 1000
         elif command == 'A':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1)
+                avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1) * 1000 * 1000
         elif command == 'D':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=1)
+                avg += timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=1) * 1000 * 1000
         elif command == 'AC':
             for x in word_freq_to_add:
-                avg += timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=1)
+                avg += timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=1) * 1000 * 1000
 
         times.append(avg / 1000)
         print("Time " + str(i + 1) + ": " + str(times[i]))
@@ -46,7 +46,7 @@ def execute_command(agent, input_sizes, command):
 
     plt.plot(input_sizes, times)
     plt.xlabel('Number of Elements')
-    plt.ylabel('Time for Operation')
+    plt.ylabel('Time for Operation (μs)')
     plt.title('Benchmarking')
     plt.show()
     return
