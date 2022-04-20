@@ -101,7 +101,7 @@ def get_command_arguments(command):
         return words_frequencies_from_file
         # scenario 2
     elif command == 'D':
-        data_file = open("eight_inputs_delete", 'r')
+        data_file = open("50_inputs_delete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -113,11 +113,18 @@ def get_command_arguments(command):
 
 def final_analysis(argument, input_sizes, command):
     all_the_times = []
-    for iteration in range(0, 10):
+    upper_bound = 10
+    for iteration in range(0, upper_bound):
         all_the_times.append(execute_commands(argument, input_sizes, command))
 
     axes = []
-    avg = 0
+    total_list_times = []
+    total_hash_times = []
+    total_tst_times = []
+    total_times = []
+    list_times = []
+    hash_times = []
+    tst_times = []
     # TODO get better names for these variables as its confusing asf.
 
     # The value return from execute_commands is a list of lists, where each element is a list containing the 8 times
@@ -128,8 +135,28 @@ def final_analysis(argument, input_sizes, command):
 
     for times in all_the_times:
         for agent_time in times:
-
-            axes.append(AxisPair(input_sizes, agent_time))
+            total_times.append(agent_time)
+            
+    list_times.append(total_times[0::3])
+    list_times = np.array([list_times[0][0], list_times[0][1], list_times[0][2], list_times[0][3], list_times[0][4], list_times[0][5], list_times[0][6], list_times[0][7], list_times[0][8], list_times[0][9]])
+    hash_times.append(total_times[1::3])
+    hash_times = np.array([hash_times[0][0], hash_times[0][1], hash_times[0][2], hash_times[0][3], hash_times[0][4], hash_times[0][5], hash_times[0][6], hash_times[0][7], hash_times[0][8], hash_times[0][9]])
+    tst_times.append(total_times[2::3])
+    tst_times = np.array([tst_times[0][0], tst_times[0][1], tst_times[0][2], tst_times[0][3], tst_times[0][4], tst_times[0][5], tst_times[0][6], tst_times[0][7], tst_times[0][8], tst_times[0][9]])
+    #for iteration in range(0, upper_bound):
+        #total_list_times += np.array([list_times[0][iteration]])
+        #total_hash_times += np.array([hash_times[0][iteration]])
+        #total_tst_times += np.array([tst_times[0][iteration]])
+    #print(list_times)
+        
+    total_list_times = np.average(list_times, axis=0)
+    total_hash_times = np.average(hash_times, axis=0)
+    total_tst_times = np.average(tst_times, axis=0)
+    #print(total_list_times)
+    
+    axes.append(AxisPair(input_sizes, total_list_times))
+    axes.append(AxisPair(input_sizes, total_hash_times))
+    axes.append(AxisPair(input_sizes, total_tst_times))
 
     plot_graph(axes, input_sizes[0], input_sizes[-1])
 
