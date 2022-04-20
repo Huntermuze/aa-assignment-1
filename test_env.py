@@ -25,17 +25,22 @@ def execute_command(agent, input_sizes, command):
 
     for n in input_sizes:
         agent.build_dictionary(get_word_freq_list(n))
+        avg = 0
+
         if command == 'S':
-            times.append(timeit.timeit(lambda: agent.search(word_freq_to_add[i]), number=5))
+            for x in word_freq_to_add:
+                avg += timeit.timeit(lambda: agent.search(x), number=1)
         elif command == 'A':
-            avg = 0
             for x in word_freq_to_add:
                 avg += timeit.timeit(lambda: agent.add_word_frequency(x), number=1)
-            times.append(avg / 1000)
         elif command == 'D':
-            times.append(timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=5))
+            for x in word_freq_to_add:
+                avg += timeit.timeit(lambda: agent.delete_word(word_freq_to_add[i]), number=1)
         elif command == 'AC':
-            times.append(timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=5))
+            for x in word_freq_to_add:
+                avg += timeit.timeit(lambda: agent.autocomplete(word_freq_to_add[i]), number=1)
+
+        times.append(avg / 1000)
         print("Time " + str(i + 1) + ": " + str(times[i]))
         i += 1
 
