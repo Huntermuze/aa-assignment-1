@@ -51,13 +51,10 @@ def execute_commands(argument, input_sizes, command):
                     avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000 * 1000
 
             times[index].append(math.log(avg / 1000, 10))
-            print("AGENT [" + str(index + 1) + "] > " + "Time " + str(input_index + 1) + ": " + str(times[index][input_index]))
+            print("AGENT [" + str(index + 1) + "] > " + "Time " + str(input_index + 1) + ": " + str(
+                times[index][input_index]))
 
-    axes = []
-    for agent_time in times:
-        axes.append(AxisPair(input_sizes, agent_time))
-
-    plot_graph(axes, input_sizes[0], input_sizes[-1])
+    return times
 
     # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
     # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
@@ -114,6 +111,29 @@ def get_command_arguments(command):
     # scenario 3 (yet to be implemented)
 
 
+def final_analysis(argument, input_sizes, command):
+    all_the_times = []
+    for iteration in range(0, 10):
+        all_the_times.append(execute_commands(argument, input_sizes, command))
+
+    axes = []
+    avg = 0
+    # TODO get better names for these variables as its confusing asf.
+
+    # The value return from execute_commands is a list of lists, where each element is a list containing the 8 times
+    # of each input_size. If there are more than 1 elements in this list, then that menas "all" was requested, and
+    # there are 3 lists (containing 8 elements each) containing the times for each data structure's algorithm (A, D, etc).
+
+    # need to handle the case where only 1 structure is requested, and other case where all 3 are requested ("all").
+
+    for times in all_the_times:
+        for agent_time in times:
+
+            axes.append(AxisPair(input_sizes, agent_time))
+
+    plot_graph(axes, input_sizes[0], input_sizes[-1])
+
+
 def get_word_freq_list(n):
     words_frequencies_from_file = []
     data_file = open("input_" + n, 'r')
@@ -155,6 +175,6 @@ if __name__ == '__main__':
     # search
     command = input("Please enter a command (S, A, D, AC): ")
     if command == 'S' or command == 'A' or command == 'D' or command == 'AC':
-        execute_commands(args[1], input_sizes_grow, command)
+        final_analysis(args[1], input_sizes_grow, command)
     else:
         print('Unknown command.')
