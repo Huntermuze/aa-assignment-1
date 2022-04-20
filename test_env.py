@@ -64,7 +64,8 @@ def execute_commands(argument, input_sizes, command):
     # plot_graph([AxisPair(x, graph_smooth)])
 
 
-def plot_graph(axes, x_axis_min, x_axis_max):
+def plot_graph(axes, x_axis_min, x_axis_max, command):
+    graph_title = ''
     if len(axes) > 0:
         for idx, axes_pair in enumerate(axes):
             title = "List"
@@ -78,10 +79,19 @@ def plot_graph(axes, x_axis_min, x_axis_max):
     else:
         return
 
+    if command == 'S':
+        graph_title = 'Search Benchmarking'
+    elif command == 'A':
+        graph_title = 'Insert Benchmarking'
+    elif command == 'D':
+        graph_title = 'Delete Benchmarking'
+    elif command == 'AC':
+        graph_title = 'Autocomplete Benchmarking'
+        
     plt.xlabel('Number of Elements')
     plt.xlim(x_axis_min, x_axis_max)
     plt.ylabel('Log of Time per Operation (ns)')
-    plt.title('Benchmarking')
+    plt.title(graph_title)
     plt.legend(loc="upper left")
     plt.show()
 
@@ -99,7 +109,7 @@ def get_command_arguments(command):
             words_frequencies_from_file.append(word_frequency)
         data_file.close()
         return words_frequencies_from_file
-        # scenario 2
+    # scenario 2
     elif command == 'D':
         data_file = open("50_inputs_delete", 'r')
         for line in data_file:
@@ -108,8 +118,23 @@ def get_command_arguments(command):
             words_frequencies_from_file.append(word)
         data_file.close()
         return words_frequencies_from_file
-    # scenario 3 (yet to be implemented)
-
+    # scenario 3 
+    elif command == 'S':
+        data_file = open("50_inputs_search", 'r')
+        for line in data_file:
+            values = line.split()
+            word = values[0]
+            words_frequencies_from_file.append(word)
+        data_file.close()
+        return words_frequencies_from_file
+    elif command == 'AC':
+        data_file = open("50_inputs_autocomplete", 'r')
+        for line in data_file:
+            values = line.split()
+            word = values[0]
+            words_frequencies_from_file.append(word)
+        data_file.close()
+        return words_frequencies_from_file
 
 def final_analysis(argument, input_sizes, command):
     all_the_times = []
@@ -158,7 +183,7 @@ def final_analysis(argument, input_sizes, command):
     axes.append(AxisPair(input_sizes, total_hash_times))
     axes.append(AxisPair(input_sizes, total_tst_times))
 
-    plot_graph(axes, input_sizes[0], input_sizes[-1])
+    plot_graph(axes, input_sizes[0], input_sizes[-1], command)
 
 
 def get_word_freq_list(n):
