@@ -1,9 +1,6 @@
 import sys
 import timeit
 import matplotlib.pyplot as plt
-from scipy.interpolate import make_interp_spline
-import numpy as np
-from dictionary.node import Node
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.list_dictionary import ListDictionary
@@ -46,13 +43,7 @@ def execute_command(agent, input_sizes, command):
         print("Time " + str(i + 1) + ": " + str(times[i]))
         i += 1
 
-    numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
-    x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
-
-    spl = make_interp_spline(numeric_input_sizes, times, k=3)
-    graph_smooth = spl(x)
-
-    plt.plot(x, graph_smooth)
+    plt.plot(input_sizes, times)
     plt.xlabel('Number of Elements')
     plt.ylabel('Time for Operation (μs)')
     plt.title('Benchmarking')
