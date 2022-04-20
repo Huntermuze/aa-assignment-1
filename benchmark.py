@@ -4,8 +4,7 @@ import timeit
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
 import numpy as np
-from dictionary.node import Node
-from AxisPair import AxisPair
+from axis_pair import AxisPair
 from dictionary.word_frequency import WordFrequency
 from dictionary.list_dictionary import ListDictionary
 from dictionary.hashtable_dictionary import HashTableDictionary
@@ -16,7 +15,7 @@ def usage():
     """
     Print help/usage message.
     """
-    print('python3 test_env.py', '<approach>')
+    print('python3 benchmark.py', '<approach>')
     print('<approach> = <list | hashtable | tst | all>')
     sys.exit(1)
 
@@ -88,7 +87,7 @@ def get_command_arguments(command):
     words_frequencies_from_file = []
     # scenario 1
     if command == 'A':
-        data_file = open("20_inputs_add", 'r')
+        data_file = open("commands/20_commands_add", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -99,7 +98,7 @@ def get_command_arguments(command):
         return words_frequencies_from_file
     # scenario 2
     elif command == 'D':
-        data_file = open("20_inputs_delete", 'r')
+        data_file = open("commands/20_commands_delete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -108,7 +107,7 @@ def get_command_arguments(command):
         return words_frequencies_from_file
     # scenario 3
     elif command == 'S':
-        data_file = open("20_inputs_search", 'r')
+        data_file = open("commands/20_commands_search", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -116,7 +115,7 @@ def get_command_arguments(command):
         data_file.close()
         return words_frequencies_from_file
     elif command == 'AC':
-        data_file = open("10_inputs_autocomplete", 'r')
+        data_file = open("commands/10_commands_autocomplete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
@@ -165,7 +164,7 @@ def final_analysis(argument, input_sizes, command):
 
 def get_word_freq_list(n):
     words_frequencies_from_file = []
-    data_file = open("input_" + n, 'r')
+    data_file = open("input/input_" + n, 'r')
     for line in data_file:
         values = line.split()
         word = values[0]

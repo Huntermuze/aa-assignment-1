@@ -42,7 +42,7 @@
 #
 # > python assign1TestScript.py -v   Assign1-s1234    list    sampleData.txt    test1.in
 #
-# Note that for each tests, the output will be stored within the code directory.  For example, above
+# Note that for each black_box_tests, the output will be stored within the code directory.  For example, above
 # that would mean test1-list.out will be created in Assign1-s1234.
 #
 #
@@ -101,7 +101,7 @@ def main():
 
     os.chdir(sCodeDir)
 
-    # variable to store the number of tests passed
+    # variable to store the number of black_box_tests passed
     passedNum = 0
     failedNum = 0
     lsTestPassed = []
@@ -157,7 +157,7 @@ def main():
     # change back to original path
     os.chdir(sOrigPath)
 
-    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " tests.")
+    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " black_box_tests.")
     print("PASSED: " + ", ".join(lsTestPassed))
     print("FAILED: " + ", ".join(lsTestFailed) + "\n")
 
