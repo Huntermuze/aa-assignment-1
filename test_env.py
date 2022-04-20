@@ -50,7 +50,7 @@ def execute_commands(argument, input_sizes, command):
                 for x in word_freq_to_add:
                     avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000
 
-            times[index].append(math.log(avg / 1000, 10) ** 2)
+            times[index].append(math.log(avg / 1000, 10))
             print("AGENT [" + str(index + 1) + "] > " + "Time " + str(input_index + 1) + ": " + str(times[index][input_index]))
 
     axes = []
