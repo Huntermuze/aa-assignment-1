@@ -57,7 +57,7 @@ def execute_commands(argument, input_sizes, command):
     for agent_time in times:
         axes.append(AxisPair(input_sizes, agent_time))
 
-    plot_graph(axes)
+    plot_graph(axes, input_sizes[0], input_sizes[-1])
 
     # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
     # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
@@ -67,7 +67,7 @@ def execute_commands(argument, input_sizes, command):
     # plot_graph([AxisPair(x, graph_smooth)])
 
 
-def plot_graph(axes):
+def plot_graph(axes, x_axis_min, x_axis_max):
     if len(axes) > 0:
         for idx, axes_pair in enumerate(axes):
             title = "List"
@@ -82,6 +82,7 @@ def plot_graph(axes):
         return
 
     plt.xlabel('Number of Elements')
+    plt.xlim(x_axis_min, x_axis_max)
     plt.ylabel('Log of Time per Operation (ns)')
     plt.title('Benchmarking')
     plt.legend(loc="upper left")
