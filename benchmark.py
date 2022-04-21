@@ -77,7 +77,7 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
 
     plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
-    plt.ylabel('Log of Time per 50 Operations (ns)')
+    plt.ylabel('Log of Time per 20 Operations (ns)')
     plt.title(graph_title)
     plt.legend(loc="upper left")
     plt.show()
@@ -115,7 +115,7 @@ def get_command_arguments(command):
         data_file.close()
         return words_frequencies_from_file
     elif command == 'AC':
-        data_file = open("commands/10_commands_autocomplete", 'r')
+        data_file = open("commands/20_commands_autocomplete", 'r')
         for line in data_file:
             values = line.split()
             word = values[0]
