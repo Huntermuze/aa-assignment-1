@@ -4,6 +4,7 @@ import timeit
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
 import numpy as np
+import random
 from axis_pair import AxisPair
 from dictionary.word_frequency import WordFrequency
 from dictionary.list_dictionary import ListDictionary
@@ -20,12 +21,13 @@ def usage():
     sys.exit(1)
 
 
-def execute_commands(argument, input_sizes, command):
-    word_freq_to_add = get_command_arguments(command)
+def execute_commands(argument, input_sizes, command, num_commands):
+    #word_freq_to_add = get_command_arguments(command)
     times = []
 
     for (i, n) in enumerate(input_sizes):
         agents = get_agents(argument)
+        word_freq_to_add = get_command_random(command, get_word_freq_list(n), n, num_commands)
 
         for (j, agent) in enumerate(agents):
             avg = 0
@@ -45,10 +47,69 @@ def execute_commands(argument, input_sizes, command):
                 for x in word_freq_to_add:
                     avg += timeit.timeit(lambda: agent.autocomplete(x), number=1) * 1000 * 1000 * 1000
 
-            times.append(math.log(avg / 1000, 10))
+            num_commands = len(word_freq_to_add)
+            times.append(math.log(avg / num_commands, 10))
             print("AGENT [" + str(j + 1) + "] > " + "Time " + str(i + 1) + ": " + str(times[i + j]))
 
     return times
+
+def get_command_random(command, input_file, n, num_commands):
+    words_frequencies_from_file = []
+    # scenario 1 grow
+    if command == 'A':
+        if n == '50':
+            max_num = 50
+        elif n == '500':
+            max_num = 500
+        elif n == '1k':
+            max_num = 1000
+        elif n == '2k':
+            max_num = 2000
+        elif n == '5k':
+            max_num = 5000
+        elif n == '10k':
+            max_num = 10000
+        elif n == '50k':
+            max_num = 50000
+        elif n == '100k':
+            max_num = 100000
+        for i in range(0, num_commands):
+            store_max = i
+            words_frequencies_from_file.append(input_file[random.randint(0, max_num-1)])
+        print("The max num is: " + str(store_max + 1))
+        return words_frequencies_from_file
+    # scenario 2 shrink + scenario 3 search
+    elif command == 'D' or command == 'S':
+        if n == '50':
+            max_num = 50
+        elif n == '500':
+            max_num = 500
+        elif n == '1k':
+            max_num = 1000
+        elif n == '2k':
+            max_num = 2000
+        elif n == '5k':
+            max_num = 5000
+        elif n == '10k':
+            max_num = 10000
+        elif n == '50k':
+            max_num = 50000
+        elif n == '100k':
+            max_num = 100000
+        for i in range(0, 1000):
+            store_max = i
+            words_frequencies_from_file.append(input_file[random.randint(0, max_num-1)].word)
+        print("The max num is: " + str(store_max + 1))
+        return words_frequencies_from_file
+    #scenario 3 autocomplete
+    elif command == 'AC':
+        data_file = open("commands/20_commands_autocomplete", 'r')
+        for line in data_file:
+            values = line.split()
+            word = values[0]
+            words_frequencies_from_file.append(word)
+        data_file.close()
+        return words_frequencies_from_file
 
 
 def get_command_arguments(command):
@@ -106,16 +167,16 @@ def get_word_freq_list(n):
 
 
 def final_analysis(argument, input_sizes, command):
+    num_commands = 1000
     total_times = []
     axes = []
     upper_bound = 10
 
     for iteration in range(0, upper_bound):
-        total_times.append(execute_commands(argument, input_sizes, command))
+        total_times.append(execute_commands(argument, input_sizes, command, num_commands))
 
     # Contains the times for the list dictionary, hashtable dictionary and the tst dictionary, respectively.
     all_dictionaries = [[], [], []]
-    print(argument)
     for run in total_times:
         if argument == "all":
             all_dictionaries[0].append(run[0::3])
@@ -142,10 +203,10 @@ def final_analysis(argument, input_sizes, command):
     # graph_smooth = spl(x)
     # plot_graph([AxisPair(x, graph_smooth)])
 
-    plot_graph(axes, input_sizes[0], input_sizes[-1], command)
+    plot_graph(axes, input_sizes[0], input_sizes[-1], command, num_commands)
 
 
-def plot_graph(axes, x_axis_min, x_axis_max, command):
+def plot_graph(axes, x_axis_min, x_axis_max, command, num_commands):
     graph_title = ''
     if len(axes) > 0:
         for idx, axes_pair in enumerate(axes):
@@ -171,7 +232,7 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
 
     plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
-    plt.ylabel('Log of Time per 20 Operations (ns)')
+    plt.ylabel('Log of Time per ' + str(num_commands) + ' Operations (ns)')
     plt.title(graph_title)
     plt.legend(loc="upper left")
     plt.show()
