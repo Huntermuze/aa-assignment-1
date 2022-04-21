@@ -77,7 +77,7 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
 
     plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
-    plt.ylabel('Log of Time per Operation (ns)')
+    plt.ylabel('Log of Time per 50 Operations (ns)')
     plt.title(graph_title)
     plt.legend(loc="upper left")
     plt.show()
