@@ -157,10 +157,12 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # Get all the children of the root_of_suffixes.
         self.get_all_children_words(root_of_suffixes, "", children_suffixes)
 
+        print(root_of_suffixes, word)
+
         # CASE 3: If no words start with the prefix, return an empty list.
-        if len(children_suffixes) <= 0:
+        if len(children_suffixes) <= 0 or root_of_suffixes is None:
             return most_frequent
-        # CASE 4: If the prefix is itself the entire word (aka. the last letter of the prefix is an end_word).
+        # CASE 4: If the prefix is itself the entire and only word (aka. the last letter of the prefix is an end_word).
         elif root_of_suffixes.end_word and len(children_suffixes) == 1:
             return [WordFrequency(word, root_of_suffixes.frequency)]
         # CASE 5: If the prefix has n usages, then find all the usages and add them to a list, selecting the three
