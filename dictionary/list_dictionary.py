@@ -73,21 +73,22 @@ class ListDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'prefix_word'
         """
         most_frequent = []
+        # Prune all the words that do not contain the prefix, as it is inefficient check this numerous times.
+        words_with_prefix = [x for x in self.word_frequencies if prefix_word == x.word[0:len(prefix_word)]]
 
         for i in range(0, 3):
             highest_frequency = 0
             highest_frequency_index = 0
 
-            for j in range(len(self.word_frequencies)):
-                curr_word_freq = self.word_frequencies[j]
+            for j in range(len(words_with_prefix)):
+                curr_word_freq = words_with_prefix[j]
 
-                if curr_word_freq.frequency > highest_frequency and curr_word_freq not in most_frequent \
-                        and prefix_word == curr_word_freq.word[0:len(prefix_word)]:
+                if curr_word_freq.frequency > highest_frequency and curr_word_freq not in most_frequent:
                     highest_frequency = curr_word_freq.frequency
                     highest_frequency_index = j
 
             if highest_frequency != 0:
-                most_frequent.append(self.word_frequencies[highest_frequency_index])
+                most_frequent.append(words_with_prefix[highest_frequency_index])
 
         return most_frequent
 
