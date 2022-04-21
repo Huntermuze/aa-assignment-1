@@ -161,13 +161,13 @@ def plot_graph(axes, x_axis_min, x_axis_max, command):
         return
 
     if command == 'S':
-        graph_title = 'Search Benchmarking'
+        graph_title = 'Search Benchmark'
     elif command == 'A':
-        graph_title = 'Insert Benchmarking'
+        graph_title = 'Add Benchmark'
     elif command == 'D':
-        graph_title = 'Delete Benchmarking'
+        graph_title = 'Delete Benchmark'
     elif command == 'AC':
-        graph_title = 'Autocomplete Benchmarking'
+        graph_title = 'Autocomplete Benchmark'
 
     plt.xlabel('Number of Elements before Operation')
     plt.xlim(x_axis_min, x_axis_max)
