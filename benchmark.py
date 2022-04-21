@@ -51,38 +51,6 @@ def execute_commands(argument, input_sizes, command):
     return times
 
 
-def plot_graph(axes, x_axis_min, x_axis_max, command):
-    graph_title = ''
-    if len(axes) > 0:
-        for idx, axes_pair in enumerate(axes):
-            title = "List"
-
-            if idx == 1:
-                title = "Hashtable"
-            elif idx == 2:
-                title = "TST"
-
-            plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
-    else:
-        return
-
-    if command == 'S':
-        graph_title = 'Search Benchmarking'
-    elif command == 'A':
-        graph_title = 'Insert Benchmarking'
-    elif command == 'D':
-        graph_title = 'Delete Benchmarking'
-    elif command == 'AC':
-        graph_title = 'Autocomplete Benchmarking'
-
-    plt.xlabel('Number of Elements before Operation')
-    plt.xlim(x_axis_min, x_axis_max)
-    plt.ylabel('Log of Time per 20 Operations (ns)')
-    plt.title(graph_title)
-    plt.legend(loc="upper left")
-    plt.show()
-
-
 def get_command_arguments(command):
     words_frequencies_from_file = []
     # scenario 1
@@ -124,44 +92,6 @@ def get_command_arguments(command):
         return words_frequencies_from_file
 
 
-def final_analysis(argument, input_sizes, command):
-    total_times = []
-    axes = []
-    list_times = []
-    hash_times = []
-    tst_times = []
-    upper_bound = 10
-
-    for iteration in range(0, upper_bound):
-        total_times.append(execute_commands(argument, input_sizes, command))
-
-    for run in total_times:
-        list_times.append(run[0::3])
-        hash_times.append(run[1::3])
-        tst_times.append(run[2::3])
-
-    list_times = np.array(list_times)
-    hash_times = np.array(hash_times)
-    tst_times = np.array(tst_times)
-
-    total_list_times = np.average(list_times, axis=0)
-    total_hash_times = np.average(hash_times, axis=0)
-    total_tst_times = np.average(tst_times, axis=0)
-
-    axes.append(AxisPair(input_sizes, total_list_times))
-    axes.append(AxisPair(input_sizes, total_hash_times))
-    axes.append(AxisPair(input_sizes, total_tst_times))
-
-    # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
-    # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
-    #
-    # spl = make_interp_spline(numeric_input_sizes, times, k=3)
-    # graph_smooth = spl(x)
-    # plot_graph([AxisPair(x, graph_smooth)])
-
-    plot_graph(axes, input_sizes[0], input_sizes[-1], command)
-
-
 def get_word_freq_list(n):
     words_frequencies_from_file = []
     data_file = open("input/input_" + n, 'r')
@@ -173,6 +103,78 @@ def get_word_freq_list(n):
         words_frequencies_from_file.append(word_frequency)
     data_file.close()
     return words_frequencies_from_file
+
+
+def final_analysis(argument, input_sizes, command):
+    total_times = []
+    axes = []
+    upper_bound = 10
+
+    for iteration in range(0, upper_bound):
+        total_times.append(execute_commands(argument, input_sizes, command))
+
+    # Contains the times for the list dictionary, hashtable dictionary and the tst dictionary, respectively.
+    all_dictionaries = [[], [], []]
+    print(argument)
+    for run in total_times:
+        if argument == "all":
+            all_dictionaries[0].append(run[0::3])
+            all_dictionaries[1].append(run[1::3])
+            all_dictionaries[2].append(run[2::3])
+        elif argument == "list":
+            all_dictionaries[0].append(run)
+        elif argument == "hashtable":
+            all_dictionaries[1].append(run)
+        else:
+            all_dictionaries[2].append(run)
+
+    if len(all_dictionaries[0]) > 0:
+        axes.append(AxisPair(input_sizes, np.average(np.array(all_dictionaries[0]), axis=0)))
+    if len(all_dictionaries[1]) > 0:
+        axes.append(AxisPair(input_sizes, np.average(np.array(all_dictionaries[1]), axis=0)))
+    if len(all_dictionaries[2]) > 0:
+        axes.append(AxisPair(input_sizes, np.average(np.array(all_dictionaries[2]), axis=0)))
+
+    # numeric_input_sizes = np.array([50, 500, 1000, 2000, 5000, 10000, 50000, 100000])
+    # x = np.linspace(numeric_input_sizes.min(), numeric_input_sizes.max(), 300)
+    #
+    # spl = make_interp_spline(numeric_input_sizes, times, k=3)
+    # graph_smooth = spl(x)
+    # plot_graph([AxisPair(x, graph_smooth)])
+
+    plot_graph(axes, input_sizes[0], input_sizes[-1], command)
+
+
+def plot_graph(axes, x_axis_min, x_axis_max, command):
+    graph_title = ''
+    if len(axes) > 0:
+        for idx, axes_pair in enumerate(axes):
+            title = "List"
+
+            if idx == 1:
+                title = "Hashtable"
+            elif idx == 2:
+                title = "TST"
+
+            plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
+    else:
+        return
+
+    if command == 'S':
+        graph_title = 'Search Benchmarking'
+    elif command == 'A':
+        graph_title = 'Insert Benchmarking'
+    elif command == 'D':
+        graph_title = 'Delete Benchmarking'
+    elif command == 'AC':
+        graph_title = 'Autocomplete Benchmarking'
+
+    plt.xlabel('Number of Elements before Operation')
+    plt.xlim(x_axis_min, x_axis_max)
+    plt.ylabel('Log of Time per 20 Operations (ns)')
+    plt.title(graph_title)
+    plt.legend(loc="upper left")
+    plt.show()
 
 
 def get_agents(argument):
