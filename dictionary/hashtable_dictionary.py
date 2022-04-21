@@ -65,6 +65,8 @@ class HashTableDictionary(BaseDictionary):
         """
         most_frequent = []
         words_to_ignore = []
+        # Prune all the words that do not contain the prefix, as it is inefficient check this numerous times.
+        words_with_prefix = [kv for kv in self.word_frequencies.items() if word == kv[0][0:len(word)]]
 
         # It is better to do a linear scan over the KeyValue objects and handle them the same in List_dict
         # for bias reasons (minimises bias) and to achieve the lowest theoretical time complexity. In this instance,
@@ -77,13 +79,13 @@ class HashTableDictionary(BaseDictionary):
             highest_frequency = 0
             word_to_add = None
 
-            for kv in self.word_frequencies.items():
-                if kv[1] > highest_frequency and kv[0] not in words_to_ignore and kv[0][0:len(word)] == word:
+            for kv in words_with_prefix:
+                if kv[1] > highest_frequency and kv[0] not in words_to_ignore:
                     highest_frequency = kv[1]
                     word_to_add = kv[0]
 
             if highest_frequency != 0:
                 words_to_ignore.append(word_to_add)
-                most_frequent.append(WordFrequency(word_to_add, self.word_frequencies[word_to_add]))
+                most_frequent.append(WordFrequency(word_to_add, highest_frequency))
 
         return most_frequent
