@@ -157,8 +157,6 @@ class TernarySearchTreeDictionary(BaseDictionary):
         # Get all the children of the root_of_suffixes.
         self.get_all_children_words(root_of_suffixes, "", children_suffixes)
 
-        print(root_of_suffixes, word)
-
         # CASE 3: If no words start with the prefix, return an empty list.
         if len(children_suffixes) <= 0 or root_of_suffixes is None:
             return most_frequent
