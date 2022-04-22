@@ -1,11 +1,10 @@
 import math
 import sys
 import timeit
-from typing import List
-
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+from typing import List
 from axis_pair import AxisPair
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.word_frequency import WordFrequency
@@ -13,9 +12,7 @@ from dictionary.list_dictionary import ListDictionary
 from dictionary.hashtable_dictionary import HashTableDictionary
 from dictionary.ternarysearchtree_dictionary import TernarySearchTreeDictionary
 
-n_mapped_to_int = {'50': 50, '500': 500, '1k': 1000, '2k': 2000, '5k': 5000, '10k': 10000, '50k': 50000,
-                   '100k': 100000}
-
+n_mapped_to_int = {'50': 50, '500': 500, '1k': 1000, '2k': 2000, '5k': 5000, '10k': 10000, '50k': 50000, '100k': 100000}
 input_sizes = ['50', '500', '1k', '2k', '5k', '10k', '50k', '100k']
 
 
@@ -79,13 +76,15 @@ def final_analysis(agent_type: str, command: str):
     plot_graph(axes, input_sizes[0], input_sizes[-1], command, num_commands)
 
 
-def execute_commands(agent_type: str, command: str, num_commands: int, adds_to_choose_from: List[WordFrequency]) -> list:
+def execute_commands(agent_type: str, command: str, num_commands: int,
+                     adds_to_choose_from: List[WordFrequency]) -> list:
     # word_freq_to_add = get_command_arguments(command)
     times = []
 
     for (i, n) in enumerate(input_sizes):
         agents = get_agents(agent_type)
-        word_freq_to_add = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands, adds_to_choose_from)
+        word_freq_to_add = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands,
+                                              adds_to_choose_from)
 
         for (j, agent) in enumerate(agents):
             avg = 0
@@ -147,7 +146,6 @@ def get_command_random(command: str, word_frequencies_from_file: List[WordFreque
                        num_commands: int, adds_to_choose_from: List[WordFrequency]) -> list:
     command_input = []
     max_num = n_mapped_to_int[n]
-    store_max = 0
 
     # TODO randomise autocomplete too, then tidy this up.
 
@@ -202,27 +200,6 @@ def plot_graph(axes: List[AxisPair], x_axis_min: str, x_axis_max: str, command: 
     plt.title(graph_title)
     plt.legend(loc="upper left")
     plt.show()
-
-
-# TODO Scheduled for deletion.
-# def get_command_arguments(command: str) -> list:
-#     create_word_frequency = False
-#     file_name = "commands/"
-#
-#     # Scenario 1
-#     if command == 'A':
-#         file_name += "20_commands_add"
-#         create_word_frequency = True
-#     # Scenario 2
-#     elif command == 'D':
-#         file_name += "20_commands_delete"
-#     # Scenario 3
-#     elif command == 'S':
-#         file_name += "20_commands_search"
-#     else:
-#         file_name += "20_commands_autocomplete"
-#
-#     return get_input_from_file(file_name, create_word_frequency)
 
 
 if __name__ == '__main__':
