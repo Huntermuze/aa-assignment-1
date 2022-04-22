@@ -54,7 +54,7 @@ class ListDictionary(BaseDictionary):
             #self.word_frequencies.append(word_frequency)
             #self._binary_insertion_sort_elements()
             index_to_place = bisect.bisect_left(self.words, word_frequency.word)
-            # index_to_place will be the position not including 0, insert includes 0, so we must go back 1
+            #pls ensure i did the indexing right (99% sure it is but had to rush)
             self.word_frequencies.insert(index_to_place, word_frequency)
 
         return word_not_present
