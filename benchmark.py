@@ -46,7 +46,7 @@ def usage():
 
 def final_analysis(agent_type: str, command: str):
     adds_to_choose_from = get_input_from_file("input/input_adds", True)
-    num_commands = 1
+    num_commands = 1000
     upper_bound = 10
     total_times = []
     axes = []
@@ -154,28 +154,21 @@ def get_command_random(command: str, word_frequencies_from_file: List[WordFreque
     # Scenario 1 grow
     if command == 'A':
         max_adds = len(adds_to_choose_from)
-        print(max_adds)
         for i in range(0, num_commands):
-            store_max = i
             command_input.append(adds_to_choose_from[random.randint(0, max_adds - 1)])
-        print("The max num is: " + str(store_max + 1))
     # Scenario 2 shrink + Scenario 3 search
     elif command == 'D' or command == 'S':
         for i in range(0, num_commands):
-            store_max = i
             command_input.append(word_frequencies_from_file[random.randint(0, max_num - 1)].word)
-        print("The max num is: " + str(store_max + 1))
     # Scenario 3 autocomplete
     else:
         for i in range(0, num_commands):
-            store_max = i
             picked_word = word_frequencies_from_file[random.randint(0, max_num - 1)].word
             if len(picked_word) <= 4:
                 cur_ac = len(picked_word)
             else:
                 cur_ac = 5
             command_input.append(picked_word[0:random.randint(1, cur_ac)])
-        print("The max num is: " + str(store_max + 1))
 
     return command_input
 

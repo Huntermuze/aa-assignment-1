@@ -1,4 +1,5 @@
 from typing import List
+import bisect
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 
@@ -14,6 +15,7 @@ class ListDictionary(BaseDictionary):
 
     def __init__(self):
         self.word_frequencies = None
+        self.words = []
 
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
@@ -24,6 +26,8 @@ class ListDictionary(BaseDictionary):
         # We will use TimSort (inbuilt) here instead because when the # of elements is > 64, it will utilise its
         # improved MergeSort instead of using BinSort (this will be horribly inefficient for larger input sizes).
         self.word_frequencies.sort(key=lambda word_freq: word_freq.word)
+        for x in self.word_frequencies:
+            self.words.append(x.word)
 
     def search(self, word: str) -> int:
         """
@@ -47,8 +51,11 @@ class ListDictionary(BaseDictionary):
         word_not_present = self.search(word_frequency.word) == 0
 
         if word_not_present:
-            self.word_frequencies.append(word_frequency)
-            self._binary_insertion_sort_elements()
+            #self.word_frequencies.append(word_frequency)
+            #self._binary_insertion_sort_elements()
+            index_to_place = bisect.bisect_left(self.words, word_frequency.word)
+            # index_to_place will be the position not including 0, insert includes 0, so we must go back 1
+            self.word_frequencies.insert(index_to_place, word_frequency)
 
         return word_not_present
 
