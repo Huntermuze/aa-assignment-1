@@ -15,7 +15,6 @@ class ListDictionary(BaseDictionary):
 
     def __init__(self):
         self.word_frequencies = None
-        self.words = []
 
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
         """
@@ -26,8 +25,6 @@ class ListDictionary(BaseDictionary):
         # We will use TimSort (inbuilt) here instead because when the # of elements is > 64, it will utilise its
         # improved MergeSort instead of using BinSort (this will be horribly inefficient for larger input sizes).
         self.word_frequencies.sort(key=lambda word_freq: word_freq.word)
-        for x in self.word_frequencies:
-            self.words.append(x.word)
 
     def search(self, word: str) -> int:
         """
@@ -35,9 +32,11 @@ class ListDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        index = self._binary_search(0, len(self.word_frequencies) - 1, word, False)
+        index = bisect.bisect_left(self.word_frequencies, word)
 
-        if index != -1:
+        # Check if the WordFrequency object's word at the index is the same as the word passed in.
+        # If it is, then it has found the word, otherwise it has not found it and found the last closest item.
+        if 0 <= index < len(self.word_frequencies) and self.word_frequencies[index].word == word:
             return self.word_frequencies[index].frequency
 
         return 0
@@ -51,10 +50,9 @@ class ListDictionary(BaseDictionary):
         word_not_present = self.search(word_frequency.word) == 0
 
         if word_not_present:
-            #self.word_frequencies.append(word_frequency)
-            #self._binary_insertion_sort_elements()
-            index_to_place = bisect.bisect_left(self.words, word_frequency.word)
-            #pls ensure i did the indexing right (99% sure it is but had to rush)
+            # self.word_frequencies.append(word_frequency)
+            # self._binary_insertion_sort_elements()
+            index_to_place = bisect.bisect_left(self.word_frequencies, word_frequency.word)
             self.word_frequencies.insert(index_to_place, word_frequency)
 
         return word_not_present
@@ -65,13 +63,14 @@ class ListDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        index_of_word = self._binary_search(0, len(self.word_frequencies) - 1, word, False)
-        word_already_present = index_of_word != -1
+        index_of_word = bisect.bisect_left(self.word_frequencies, word)
+        word_present = False
 
-        if word_already_present:
+        if 0 <= index_of_word < len(self.word_frequencies) and self.word_frequencies[index_of_word].word == word:
+            word_present = True
             self.word_frequencies.remove(self.word_frequencies[index_of_word])
 
-        return word_already_present
+        return word_present
 
     def autocomplete(self, prefix_word: str) -> List[WordFrequency]:
         """
@@ -99,40 +98,14 @@ class ListDictionary(BaseDictionary):
 
         return most_frequent
 
-    # Binary Insertion Sort (BinSort) - takes advantage of best case O(nlog(n)).
-    # Only to be used when adding new items.
-    def _binary_insertion_sort_elements(self):
-        for i in range(1, len(self.word_frequencies)):
-            current = self.word_frequencies[i]
-            where_current_belongs = self._binary_search(0, i - 1, current.word, True)
-            j = i
 
-            while j > where_current_belongs:
-                self.word_frequencies[j] = self.word_frequencies[j - 1]
-                j -= 1
+if __name__ == '__main__':
+    x = ListDictionary()
+    x.build_dictionary([WordFrequency("v", 3423)])
+    for a in [WordFrequency("z", 15), WordFrequency("b", 35), WordFrequency("a", 5), WordFrequency("f", 534)]:
+        x.add_word_frequency(a)
 
-            self.word_frequencies[where_current_belongs] = current
+    x.add_word_frequency(WordFrequency("d", 23))
 
-    # Slightly modified version, so that it returns the closest index if not found or -1 if not found (up to caller).
-    def _binary_search(self, left: int, right: int, word: str, return_closest: bool) -> int:
-        if return_closest:
-            if left == right:
-                if self.word_frequencies[left].word > word:
-                    return left
-                else:
-                    return left + 1
-
-            if left > right:
-                return left
-        else:
-            if left > right:
-                return -1
-
-        midpoint = (left + right) // 2
-
-        if self.word_frequencies[midpoint].word < word:
-            return self._binary_search(midpoint + 1, right, word, return_closest)
-        elif self.word_frequencies[midpoint].word > word:
-            return self._binary_search(left, midpoint - 1, word, return_closest)
-        else:
-            return midpoint
+    for y in x.word_frequencies:
+        print(y.word, y.frequency, end=' ')
