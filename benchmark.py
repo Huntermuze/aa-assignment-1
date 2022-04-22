@@ -14,6 +14,7 @@ from dictionary.ternarysearchtree_dictionary import TernarySearchTreeDictionary
 
 n_mapped_to_int = {'50': 50, '500': 500, '1k': 1000, '2k': 2000, '5k': 5000, '10k': 10000, '50k': 50000, '100k': 100000}
 input_sizes = ['50', '500', '1k', '2k', '5k', '10k', '50k', '100k']
+cached_input_from_file = {}
 
 
 def main():
@@ -78,13 +79,12 @@ def final_analysis(agent_type: str, command: str):
 
 def execute_commands(agent_type: str, command: str, num_commands: int,
                      adds_to_choose_from: List[WordFrequency]) -> list:
-    # word_freq_to_add = get_command_arguments(command)
     times = []
 
     for (i, n) in enumerate(input_sizes):
         agents = get_agents(agent_type)
-        word_freq_to_add = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands,
-                                              adds_to_choose_from)
+        word_freqs_to_process = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands,
+                                               adds_to_choose_from)
 
         for (j, agent) in enumerate(agents):
             avg = 0
@@ -99,12 +99,12 @@ def execute_commands(agent_type: str, command: str, num_commands: int,
             else:
                 method_to_time = agent.autocomplete
 
-            for x in word_freq_to_add:
+            for x in word_freqs_to_process:
                 avg += timeit.timeit(lambda: method_to_time(x), number=1) * 1000 * 1000 * 1000
 
-            num_commands = len(word_freq_to_add)
+            num_commands = len(word_freqs_to_process)
             times.append(math.log(avg / num_commands, 10))
-            print("AGENT [" + str(j + 1) + "] > " + "Time " + str(i + 1) + ": " + str(times[i + j]))
+            print("AGENT [" + str(j + 1) + "] > " + n + " Size Time" + ": " + str(times[i + j]))
 
     return times
 
@@ -124,30 +124,34 @@ def get_agents(agent_type: str) -> List[BaseDictionary]:
 
 
 def get_input_from_file(file_path: str, create_word_frequency: bool) -> list:
-    input_from_file = []
+    input_size = file_path[12:]
 
-    with open(file_path, 'r') as data_file:
-        for line in data_file:
-            values = line.split()
-            word = values[0]
+    if input_size not in cached_input_from_file:
+        input_from_file = []
 
-            # If each line contains a word and its frequency
-            if create_word_frequency:
-                frequency = int(values[1])
-                input_from_file.append(WordFrequency(word, frequency))
-            # If there is only a word and no frequency (i.e., delete, search or autocomplete commands).
-            else:
-                input_from_file.append(word)
+        with open(file_path, 'r') as data_file:
+            for line in data_file:
+                values = line.split()
+                word = values[0]
 
-    return input_from_file
+                # If each line contains a word and its frequency
+                if create_word_frequency:
+                    frequency = int(values[1])
+                    input_from_file.append(WordFrequency(word, frequency))
+                # If there is only a word and no frequency (i.e., delete, search or autocomplete commands).
+                else:
+                    input_from_file.append(word)
+
+        # Add to the cached input list to speedup the benchmarking.
+        cached_input_from_file[input_size] = input_from_file
+
+    return cached_input_from_file[input_size]
 
 
 def get_command_random(command: str, word_frequencies_from_file: List[WordFrequency], n: str,
                        num_commands: int, adds_to_choose_from: List[WordFrequency]) -> list:
     command_input = []
     max_num = n_mapped_to_int[n]
-
-    # TODO randomise autocomplete too, then tidy this up.
 
     # Scenario 1 grow
     if command == 'A':

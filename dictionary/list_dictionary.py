@@ -21,7 +21,7 @@ class ListDictionary(BaseDictionary):
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
-        self.word_frequencies = words_frequencies
+        self.word_frequencies = [*words_frequencies]
         # We will use TimSort (inbuilt) here instead because when the # of elements is > 64, it will utilise its
         # improved MergeSort instead of using BinSort (this will be horribly inefficient for larger input sizes).
         self.word_frequencies.sort(key=lambda word_freq: word_freq.word)
