@@ -45,7 +45,8 @@ def usage():
 
 
 def final_analysis(agent_type: str, command: str):
-    num_commands = 1000
+    adds_to_choose_from = get_input_from_file("input/input_adds", True)
+    num_commands = 100
     upper_bound = 10
     total_times = []
     axes = []
@@ -55,7 +56,7 @@ def final_analysis(agent_type: str, command: str):
         input_sizes.reverse()
 
     for iteration in range(0, upper_bound):
-        total_times.append(execute_commands(agent_type, command, num_commands))
+        total_times.append(execute_commands(agent_type, command, num_commands, adds_to_choose_from))
 
     # Contains the times for the list dictionary, hashtable dictionary and the tst dictionary, respectively.
     all_dictionaries = [[], [], []]
@@ -78,13 +79,13 @@ def final_analysis(agent_type: str, command: str):
     plot_graph(axes, input_sizes[0], input_sizes[-1], command, num_commands)
 
 
-def execute_commands(agent_type: str, command: str, num_commands: int) -> list:
+def execute_commands(agent_type: str, command: str, num_commands: int, adds_to_choose_from: List[WordFrequency]) -> list:
     # word_freq_to_add = get_command_arguments(command)
     times = []
 
     for (i, n) in enumerate(input_sizes):
         agents = get_agents(agent_type)
-        word_freq_to_add = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands)
+        word_freq_to_add = get_command_random(command, get_input_from_file("input/input_" + n, True), n, num_commands, adds_to_choose_from)
 
         for (j, agent) in enumerate(agents):
             avg = 0
@@ -143,7 +144,7 @@ def get_input_from_file(file_path: str, create_word_frequency: bool) -> list:
 
 
 def get_command_random(command: str, word_frequencies_from_file: List[WordFrequency], n: str,
-                       num_commands: int) -> list:
+                       num_commands: int, adds_to_choose_from: List[WordFrequency]) -> list:
     command_input = []
     max_num = n_mapped_to_int[n]
     store_max = 0
@@ -152,13 +153,15 @@ def get_command_random(command: str, word_frequencies_from_file: List[WordFreque
 
     # Scenario 1 grow
     if command == 'A':
+        max_adds = len(adds_to_choose_from)
+        print(max_adds)
         for i in range(0, num_commands):
             store_max = i
-            command_input.append(word_frequencies_from_file[random.randint(0, max_num - 1)])
+            command_input.append(adds_to_choose_from[random.randint(0, max_adds - 1)])
         print("The max num is: " + str(store_max + 1))
     # Scenario 2 shrink + Scenario 3 search
     elif command == 'D' or command == 'S':
-        for i in range(0, 1000):
+        for i in range(0, num_commands):
             store_max = i
             command_input.append(word_frequencies_from_file[random.randint(0, max_num - 1)].word)
         print("The max num is: " + str(store_max + 1))
