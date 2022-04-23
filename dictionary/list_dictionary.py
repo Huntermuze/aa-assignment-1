@@ -97,15 +97,3 @@ class ListDictionary(BaseDictionary):
                 most_frequent.append(words_with_prefix[highest_frequency_index])
 
         return most_frequent
-
-
-if __name__ == '__main__':
-    x = ListDictionary()
-    x.build_dictionary([WordFrequency("v", 3423)])
-    for a in [WordFrequency("z", 15), WordFrequency("b", 35), WordFrequency("a", 5), WordFrequency("f", 534)]:
-        x.add_word_frequency(a)
-
-    x.add_word_frequency(WordFrequency("d", 23))
-
-    for y in x.word_frequencies:
-        print(y.word, y.frequency, end=' ')
