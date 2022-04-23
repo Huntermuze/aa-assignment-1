@@ -1,7 +1,6 @@
 import math
 import sys
 import timeit
-import numpy as np
 import random
 from display import *
 from typing import List
