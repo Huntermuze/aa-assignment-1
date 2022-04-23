@@ -48,6 +48,9 @@ def final_analysis(agent_type: str, command: str):
     upper_bound = 10
     total_times = []
     axes = []
+    approaches = ["List", "Hashtable", "TST"]
+    speeds = []
+    get_graph_input = input("Enter the type of graph you want (speed or size): ")
 
     # Reverse the input_size if we are dealing with a delete command.
     if command == 'D':
@@ -69,12 +72,14 @@ def final_analysis(agent_type: str, command: str):
             all_dictionaries[1].append(run)
         else:
             all_dictionaries[2].append(run)
-
     for dictionary_time in all_dictionaries:
         if len(dictionary_time) > 0:
-            axes.append(AxisPair(input_sizes, np.average(np.array(dictionary_time), axis=0)))
+            if get_graph_input == "size":
+                axes.append(AxisPair(input_sizes, np.average(np.array(dictionary_time), axis=0)))
+            elif get_graph_input == "speed":
+                speeds.append(np.average(np.average(np.array(dictionary_time), axis=0)))
 
-    plot_graph(axes, input_sizes[0], input_sizes[-1], command, num_commands)
+    plot_graph(axes, input_sizes[0], input_sizes[-1], command, num_commands, get_graph_input, approaches, speeds)
 
 
 def execute_commands(agent_type: str, command: str, num_commands: int,
@@ -102,7 +107,6 @@ def execute_commands(agent_type: str, command: str, num_commands: int,
             for x in word_freqs_to_process:
                 avg += timeit.timeit(lambda: method_to_time(x), number=1) * 1000 * 1000 * 1000
 
-            num_commands = len(word_freqs_to_process)
             times.append(math.log(avg / num_commands, 10))
             print("AGENT [" + str(j + 1) + "] > " + n + " Size Time" + ": " + str(times[i + j]))
 
@@ -175,35 +179,43 @@ def get_command_random(command: str, word_frequencies_from_file: List[WordFreque
     return command_input
 
 
-def plot_graph(axes: List[AxisPair], x_axis_min: str, x_axis_max: str, command: str, num_commands: int):
-    if len(axes) <= 0:
-        return
+def plot_graph(axes: List[AxisPair], x_axis_min: str, x_axis_max: str, command: str, num_commands: int, graph_input: str, approaches, speeds):
+    #if len(axes) <= 0:
+        #return
 
-    for idx, axes_pair in enumerate(axes):
-        title = "List"
+    if graph_input == "size":
+        for idx, axes_pair in enumerate(axes):
+            title = "List"
 
-        if idx == 1:
-            title = "Hashtable"
-        elif idx == 2:
-            title = "TST"
+            if idx == 1:
+                title = "Hashtable"
+            elif idx == 2:
+                title = "TST"
 
-        plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
+            plt.plot(axes_pair.x_axis, axes_pair.y_axis, label=title)
 
-    if command == 'S':
-        graph_title = 'Search Benchmark'
-    elif command == 'A':
-        graph_title = 'Add Benchmark'
-    elif command == 'D':
-        graph_title = 'Delete Benchmark'
-    else:
-        graph_title = 'Autocomplete Benchmark'
+        if command == 'S':
+            graph_title = 'Search Benchmark'
+        elif command == 'A':
+            graph_title = 'Add Benchmark'
+        elif command == 'D':
+            graph_title = 'Delete Benchmark'
+        else:
+            graph_title = 'Autocomplete Benchmark'
 
-    plt.xlabel('Number of Elements before Operation')
-    plt.xlim(x_axis_min, x_axis_max)
-    plt.ylabel('Log of Time per ' + str(num_commands) + ' Operations (ns)')
-    plt.title(graph_title)
-    plt.legend(loc="upper left")
-    plt.show()
+        plt.xlabel('Number of Elements before Operation')
+        plt.xlim(x_axis_min, x_axis_max)
+        plt.ylabel('Log of Time per ' + str(num_commands) + ' Operations (ns)')
+        plt.title(graph_title)
+        plt.legend(loc="upper left")
+        plt.show()
+    
+    elif graph_input == "speed":
+        plt.bar(approaches, speeds)
+        plt.show()
+        print(speeds[0])
+        print(speeds[1])
+        print(speeds[2])
 
 
 if __name__ == '__main__':
