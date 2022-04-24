@@ -50,8 +50,6 @@ class ListDictionary(BaseDictionary):
         word_not_present = self.search(word_frequency.word) == 0
 
         if word_not_present:
-            # self.word_frequencies.append(word_frequency)
-            # self._binary_insertion_sort_elements()
             index_to_place = bisect.bisect_left(self.word_frequencies, word_frequency.word)
             self.word_frequencies.insert(index_to_place, word_frequency)
 
