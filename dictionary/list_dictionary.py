@@ -78,6 +78,8 @@ class ListDictionary(BaseDictionary):
         """
         most_frequent = []
         # Prune all the words that do not contain the prefix, as it is inefficient check this numerous times.
+        # The following, 0:len(prefix_word), will be inlined, so calculations are not repeated (exclude from
+        # theoretical time complexity).
         words_with_prefix = [x for x in self.word_frequencies if prefix_word == x.word[0:len(prefix_word)]]
 
         for i in range(0, 3):
