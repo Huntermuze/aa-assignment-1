@@ -69,7 +69,7 @@ def plot_singular_bar_chart(titles, data):
 
     plt.title("Overall Algorithm Efficiency")
     plt.xlabel('Approach', fontweight='bold', fontsize=15)
-    plt.ylabel('Overall Efficiency Score', fontweight='bold', fontsize=15)
+    plt.ylabel('Overall Inefficiency Score', fontweight='bold', fontsize=15)
     plt.show()
 
 
@@ -93,7 +93,7 @@ def plot_multi_bar_chart(data: list, x_titles: list):
 
     # Adding Xticks
     plt.xlabel('Algorithm', fontweight='bold', fontsize=15)
-    plt.ylabel('Time', fontweight='bold', fontsize=15)
+    plt.ylabel('Log of Time (ns)', fontweight='bold', fontsize=15)
     plt.xticks([r + bar_width for r in range(len(data[0]))],
                x_titles)
 
