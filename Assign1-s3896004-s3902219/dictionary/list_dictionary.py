@@ -1,7 +1,7 @@
 from typing import List
 import bisect
-from word_frequency import WordFrequency
-from base_dictionary import BaseDictionary
+from dictionary.word_frequency import WordFrequency
+from dictionary.base_dictionary import BaseDictionary
 
 
 # ------------------------------------------------------------------------

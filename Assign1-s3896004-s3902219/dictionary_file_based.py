@@ -1,4 +1,5 @@
 import sys
+from dictionary.node import Node
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.list_dictionary import ListDictionary
