@@ -71,7 +71,7 @@ def main():
 
 def final_analysis(approach_arg: str, algorithm_arg: str, output_type_arg: str, representation_type):
     adds_to_choose_from = get_input_from_file("input/input_adds", True)
-    num_of_algorithm_iterations = 15
+    num_of_algorithm_iterations = 100
     upper_bound = 10
 
     # Contains each approach, and each approach's algorithm times. Approach -> Algorithm -> 8 Times.
