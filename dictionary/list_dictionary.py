@@ -50,8 +50,6 @@ class ListDictionary(BaseDictionary):
         word_not_present = self.search(word_frequency.word) == 0
 
         if word_not_present:
-            # self.word_frequencies.append(word_frequency)
-            # self._binary_insertion_sort_elements()
             index_to_place = bisect.bisect_left(self.word_frequencies, word_frequency.word)
             self.word_frequencies.insert(index_to_place, word_frequency)
 
@@ -80,6 +78,8 @@ class ListDictionary(BaseDictionary):
         """
         most_frequent = []
         # Prune all the words that do not contain the prefix, as it is inefficient check this numerous times.
+        # The following, 0:len(prefix_word), will be inlined, so calculations are not repeated (exclude from
+        # theoretical time complexity).
         words_with_prefix = [x for x in self.word_frequencies if prefix_word == x.word[0:len(prefix_word)]]
 
         for i in range(0, 3):
