@@ -2,9 +2,9 @@ import math
 import sys
 import timeit
 import random
-from display import *
+from generation.display import *
 from typing import List
-from axis_pair import AxisPair
+from generation.axis_pair import AxisPair
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.word_frequency import WordFrequency
 from dictionary.list_dictionary import ListDictionary
