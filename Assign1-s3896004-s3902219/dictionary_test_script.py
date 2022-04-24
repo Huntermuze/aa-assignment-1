@@ -116,7 +116,7 @@ def main():
         for (j, sInLoopFile) in enumerate(lsInFile):
             sInFile = os.path.join(sOrigPath, sInLoopFile)
             sTestName = os.path.splitext(os.path.basename(sInFile))[0]
-            sOutputFile = os.path.join(sCodeDir, "black_box_tests/" + sTestName + "-" + sImpl + ".out")
+            sOutputFile = os.path.join(sCodeDir, sTestName + "-" + sImpl + ".out")
             sExpectedFile = os.path.splitext(sInFile)[0] + ".exp"
 
             # check if expected files exist
@@ -157,7 +157,7 @@ def main():
     # change back to original path
     os.chdir(sOrigPath)
 
-    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " black_box_tests.")
+    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)))
     print("PASSED: " + ", ".join(lsTestPassed))
     print("FAILED: " + ", ".join(lsTestFailed) + "\n")
 
