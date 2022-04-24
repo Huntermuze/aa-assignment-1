@@ -157,7 +157,7 @@ def main():
     # change back to original path
     os.chdir(sOrigPath)
 
-    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)))
+    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " black_box_tests.")
     print("PASSED: " + ", ".join(lsTestPassed))
     print("FAILED: " + ", ".join(lsTestFailed) + "\n")
 
