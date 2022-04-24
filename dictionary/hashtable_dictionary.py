@@ -20,6 +20,7 @@ class HashTableDictionary(BaseDictionary):
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
+        # Build the dictionary with key:value word:freq for all objects
         for word_freq in words_frequencies:
             self.word_frequencies[word_freq.word] = word_freq.frequency
 
@@ -29,6 +30,7 @@ class HashTableDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
+        # Here we will search for the word, if its present then we simply return that it is
         return self.word_frequencies[word] if word in self.word_frequencies else 0
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
@@ -37,6 +39,8 @@ class HashTableDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
+        # We will search for the word, if it is not found then we create a new key:value
+        # for the current word_freq object
         word_not_found = self.search(word_frequency.word) == 0
 
         if word_not_found:
@@ -50,6 +54,8 @@ class HashTableDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
+        # Similar case here, we will search for the word, if it is found then
+        # we can simply delete it's key:value 
         word_found = self.search(word) != 0
 
         if word_found:

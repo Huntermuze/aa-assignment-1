@@ -32,6 +32,8 @@ class ListDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
+        # We will utilise the under the hood c implementation of working with sorted list using the bisect module.
+        # This is what we have found to be the most optimised solution for doing this task
         index = bisect.bisect_left(self.word_frequencies, word)
 
         # Check if the WordFrequency object's word at the index is the same as the word passed in.
@@ -47,8 +49,11 @@ class ListDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
+        # Search the list to see if the word is present or not (requirement)
         word_not_present = self.search(word_frequency.word) == 0
 
+        # If not present then that means we can utilise the bisect module to insert the word_freq
+        # object into its correct position
         if word_not_present:
             index_to_place = bisect.bisect_left(self.word_frequencies, word_frequency.word)
             self.word_frequencies.insert(index_to_place, word_frequency)
@@ -61,6 +66,8 @@ class ListDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
+        # Here we can get the index of the word using the bisect module, and assuming
+        # the list is not empty and the word is present, we will remove it from the list
         index_of_word = bisect.bisect_left(self.word_frequencies, word)
         word_present = False
 

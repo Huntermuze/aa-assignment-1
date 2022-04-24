@@ -15,6 +15,7 @@ from dictionary.node import Node
 class TernarySearchTreeDictionary(BaseDictionary):
 
     def __init__(self):
+        # Keep track of the root node of the tree (important)
         self.root_node = None
 
     def build_dictionary(self, words_frequencies: List[WordFrequency]):
@@ -22,15 +23,22 @@ class TernarySearchTreeDictionary(BaseDictionary):
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
+        # Here we will build the building by utilising the add operation over and over until
+        # all word_freqs have been added, since recursion is used we can simply assign the root_node
+        # to the final word_freq 
         for word_freq in words_frequencies:
             self.root_node = self.add_to_tst(self.root_node, word_freq.word, word_freq.frequency, 0)
 
     def add_to_tst(self, cur_node: Node, cur_word: str, cur_freq: int, cur_index: int):
         cur_char = cur_word[cur_index]
 
+        # If the tree is empty, then create it
         if cur_node is None:
             cur_node = Node(cur_char)
 
+        # Recursively create the tree by going through each letter, if the letter is less than
+        # the current letter in the alphabet, it goes left, if its more, it goes right, if its the same,
+        # then we move down as we have found the prefix for a word
         if cur_char < cur_node.letter:
             cur_node.left = self.add_to_tst(cur_node.left, cur_word, cur_freq, cur_index)
         elif cur_char > cur_node.letter:
@@ -38,6 +46,8 @@ class TernarySearchTreeDictionary(BaseDictionary):
         elif cur_index < len(cur_word) - 1:
             cur_node.middle = self.add_to_tst(cur_node.middle, cur_word, cur_freq, cur_index + 1)
         else:
+            # If none of the above hold true, we have reached the final letter and can assign
+            # the frequency of the word to it (as required)
             cur_node.frequency = cur_freq
             cur_node.end_word = True
 
@@ -65,7 +75,7 @@ class TernarySearchTreeDictionary(BaseDictionary):
             return None
 
         cur_char = cur_word[cur_index]
-
+        # Recursively search through the tree utilising a similar approach to the adding
         if cur_char < cur_node.letter:
             return self.search_tst(cur_node.left, cur_word, cur_index)
         elif cur_char > cur_node.letter:
@@ -73,6 +83,8 @@ class TernarySearchTreeDictionary(BaseDictionary):
         elif cur_index < len(cur_word) - 1:
             return self.search_tst(cur_node.middle, cur_word, cur_index + 1)
         else:
+            # If none of the above hold true, then that means our search is successful
+            # and we have found the word, so we must return it
             return cur_node
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
@@ -81,6 +93,7 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
+        # Confirm that the word_freq doesn't exist, if it doesn't then we can safely add it
         find_node = self.search_tst(self.root_node, word_frequency.word, 0)
         node_does_not_exist = find_node is None or find_node.end_word is False
 
@@ -95,6 +108,8 @@ class TernarySearchTreeDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
+        # Similar to above, we will check that the word exists, if it does
+        # then we can safely delete it
         word_exists = self.search(word) != 0
 
         if word_exists:
@@ -190,6 +205,7 @@ class TernarySearchTreeDictionary(BaseDictionary):
         return most_frequent
 
     def get_all_children_words(self, cur_node: Node, output: str, children_suffixes: list):
+        # Get the children nodes required for autocomplete
         if cur_node is not None:
             self.get_all_children_words(cur_node.left, output, children_suffixes)
             self.get_all_children_words(cur_node.middle, output + str(cur_node.letter), children_suffixes)
