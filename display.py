@@ -67,7 +67,7 @@ def plot_singular_bar_chart(titles, data):
     plt.bar(titles, data, color='maroon',
             width=0.4)
 
-    plt.title("Overall Algorithm Efficiency")
+    plt.title("Overall Algorithm Inefficiency")
     plt.xlabel('Approach', fontweight='bold', fontsize=15)
     plt.ylabel('Overall Inefficiency Score', fontweight='bold', fontsize=15)
     plt.show()
