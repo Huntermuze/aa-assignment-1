@@ -1,4 +1,4 @@
-from dictionary.word_frequency import WordFrequency
+from word_frequency import WordFrequency
 
 
 # -------------------------------------------------
