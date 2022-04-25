@@ -3,13 +3,14 @@ import sys
 import timeit
 import random
 from typing import List
-from generation.display import *
-from generation.axis_pair import AxisPair
-from dictionary.base_dictionary import BaseDictionary
-from dictionary.word_frequency import WordFrequency
-from dictionary.list_dictionary import ListDictionary
-from dictionary.hashtable_dictionary import HashTableDictionary
-from dictionary.ternarysearchtree_dictionary import TernarySearchTreeDictionary
+from display import *
+from axis_pair import AxisPair
+from base_dictionary import BaseDictionary
+from word_frequency import WordFrequency
+from list_dictionary import ListDictionary
+from hashtable_dictionary import HashTableDictionary
+from ternarysearchtree_dictionary import TernarySearchTreeDictionary
+
 
 n_mapped_to_int = {'50': 50, '500': 500, '1k': 1000, '2k': 2000, '5k': 5000, '10k': 10000, '50k': 50000, '100k': 100000}
 input_sizes = ['50', '500', '1k', '2k', '5k', '10k', '50k', '100k']
