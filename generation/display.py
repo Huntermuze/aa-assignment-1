@@ -1,6 +1,6 @@
 from typing import List
 
-from generation.axis_pair import AxisPair
+from axis_pair import AxisPair
 import matplotlib.pyplot as plt
 import numpy as np
 

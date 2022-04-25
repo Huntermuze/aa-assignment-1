@@ -1,7 +1,7 @@
 from typing import List
-from base_dictionary import BaseDictionary
-from word_frequency import WordFrequency
-from node import Node
+from dictionary.base_dictionary import BaseDictionary
+from dictionary.word_frequency import WordFrequency
+from dictionary.node import Node
 
 
 # ------------------------------------------------------------------------
