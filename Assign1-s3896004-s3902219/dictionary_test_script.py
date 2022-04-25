@@ -1,5 +1,5 @@
 #
-# Script to perform automated testing for Assignment 1 of AA, 2022 semester 1
+# Script to perform automated testing for Assign1-s3896004-s3902219 of AA, 2022 semester 1
 #
 # The provided Python script will be the same one used to test your implementation. The script runs one of the three
 # implementations then runs a series of test. Each test consists of sequence of operations to execute, whose results
