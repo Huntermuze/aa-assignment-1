@@ -1,5 +1,5 @@
 #
-# Script to perform automated testing for Assign1-s3896004-s3902219 of AA, 2022 semester 1
+# Script to perform automated testing for Assignment 1 of AA, 2022 semester 1
 #
 # The provided Python script will be the same one used to test your implementation. The script runs one of the three
 # implementations then runs a series of test. Each test consists of sequence of operations to execute, whose results
@@ -10,8 +10,7 @@
 #
 # Usage, assuming you are in the directory where the test script "dictionary_test_script.py" is located.
 #
-# > python dictionary_test_script.py [-v] <codeDirectory> <name of implementation to test> <data filename> <list of
-# input files to test on>
+# > python dictionary_test_script.py [-v] <codeDirectory> <name of implementation to test> <data filename> <list of input files to test on>
 #
 # options:
 #
@@ -42,7 +41,7 @@
 #
 # > python assign1TestScript.py -v   Assign1-s1234    list    sampleData.txt    test1.in
 #
-# Note that for each black_box_tests, the output will be stored within the code directory.  For example, above
+# Note that for each tests, the output will be stored within the code directory.  For example, above
 # that would mean test1-list.out will be created in Assign1-s1234.
 #
 #
@@ -50,11 +49,15 @@
 # @Son Hoang Dau, 2022
 #
 
+import string
+import csv
 import getopt
 import os
 import os.path
+import re
 import sys
 import subprocess as sp
+import difflib
 
 
 def main():
@@ -101,7 +104,7 @@ def main():
 
     os.chdir(sCodeDir)
 
-    # variable to store the number of black_box_tests passed
+    # variable to store the number of tests passed
     passedNum = 0
     failedNum = 0
     lsTestPassed = []
@@ -116,7 +119,7 @@ def main():
         for (j, sInLoopFile) in enumerate(lsInFile):
             sInFile = os.path.join(sOrigPath, sInLoopFile)
             sTestName = os.path.splitext(os.path.basename(sInFile))[0]
-            sOutputFile = os.path.join(sCodeDir, "black_box_tests/" + sTestName + "-" + sImpl + ".out")
+            sOutputFile = os.path.join(sCodeDir, sTestName + "-" + sImpl + ".out")
             sExpectedFile = os.path.splitext(sInFile)[0] + ".exp"
 
             # check if expected files exist
@@ -157,7 +160,7 @@ def main():
     # change back to original path
     os.chdir(sOrigPath)
 
-    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " black_box_tests.")
+    print("\nSUMMARY: " + sExec + " has passed " + str(passedNum) + " out of " + str(len(lsInFile)) + " tests.")
     print("PASSED: " + ", ".join(lsTestPassed))
     print("FAILED: " + ", ".join(lsTestFailed) + "\n")
 
